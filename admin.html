@@ -68,19 +68,63 @@
                     <option value="Juli">Jul</option><option value="Agustus">Agu</option><option value="September">Sep</option>
                     <option value="Oktober">Okt</option><option value="November">Nov</option><option value="Desember">Des</option>
                  </select>
-                 <input type="number" id="tahun-input" value="2026" class="bg-black/40 w-10 text-[9px] outline-none border border-white/10 rounded p-1 text-center text-white">
+                 <input type="number" id="tahun-input" value="2025" class="bg-black/40 w-12 text-[9px] outline-none border border-white/10 rounded p-1 text-center text-white">
              </div>
              <button onclick="prosesGenerate()" id="btn-gen" class="gold-btn px-4 py-2 rounded-lg text-[8px] uppercase">Generate Tagihan</button>
         </div>
     </div>
 
     <script>
-        // URL API Baru yang kamu berikan
-        const API_URL = "https://script.google.com/macros/s/AKfycbzYUCJCK3YclQrJCCWvL_VOiqEBAJAT66u1hNdYZ9QICqxaT2TFQgWRZoUhLcx2M-14QA/exec";
+        // GANTI LINK DI BAWAH INI DENGAN URL WEB APP KAMU
+        const API_URL = "MASUKKAN_URL_BARU_KAMU_DISINI";
+        
         let dataMaster = [];
         let filterStatus = 'semua';
 
-        // Fungsi Tambah Anggota Baru
+        async function fetchInitialData() {
+            const area = document.getElementById('area-hasil');
+            area.innerHTML = "<p class='col-span-3 text-[8px] animate-pulse py-4 text-gray-500'>SINKRONISASI...</p>";
+            try {
+                const res = await fetch(`${API_URL}?action=read`);
+                dataMaster = await res.json();
+                
+                const belumBayar = dataMaster.filter(d => d.lunas == false).length;
+                const totalUang = dataMaster.filter(d => d.lunas == true).reduce((sum, item) => sum + Number(item.jumlah), 0);
+                
+                document.getElementById('stat-belum-bayar').innerText = belumBayar;
+                document.getElementById('stat-total-uang').innerText = "Rp " + totalUang.toLocaleString('id-ID');
+                
+                renderData();
+            } catch(e) { 
+                area.innerHTML = "<p class='col-span-3 text-[8px] text-red-500'>GAGAL LOAD DATA</p>"; 
+            }
+        }
+
+        function renderData() {
+            const namaCari = document.getElementById('cari-nama').value.toUpperCase();
+            const area = document.getElementById('area-hasil');
+            let hasil = dataMaster.filter(d => d.nama.toString().toUpperCase().includes(namaCari));
+
+            if (filterStatus === 'belum') hasil = hasil.filter(d => d.lunas === false);
+            if (filterStatus === 'lunas') hasil = hasil.filter(d => d.lunas === true);
+
+            area.innerHTML = hasil.length ? "" : "<p class='col-span-3 text-[8px] py-4 text-gray-700 uppercase'>Kosong</p>";
+            
+            hasil.forEach(h => {
+                area.innerHTML += `
+                <div class="p-2 card rounded-xl flex flex-col justify-between border-t-2 ${h.lunas ? 'border-green-500/40' : 'border-red-500/30'}">
+                    <div class="mb-1 text-left">
+                        <p class="text-[6px] text-gray-500 font-bold uppercase truncate-text">${h.bulan} ${h.tahun}</p>
+                        <p class="font-black text-white text-[9px]">Rp${Number(h.jumlah).toLocaleString('id-ID')}</p>
+                        <p class="text-[7px] text-gray-300 uppercase truncate-text font-medium">${h.nama}</p>
+                    </div>
+                    <button ${h.lunas ? '' : `onclick="bayar('${h.id}')"`} class="${h.lunas ? 'bg-green-900/40 text-green-500 cursor-default' : 'bg-green-600 text-white active:scale-95'} w-full py-1 rounded-md text-[7px] font-black uppercase transition-all">
+                        ${h.lunas ? 'LUNAS' : 'BAYAR'}
+                    </button>
+                </div>`;
+            });
+        }
+
         async function tambahWarga() {
             const nama = document.getElementById('new-nama').value;
             const nominal = document.getElementById('new-nominal').value;
@@ -90,14 +134,36 @@
             btn.innerText = "...";
             btn.disabled = true;
             try {
-                const response = await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}`);
+                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}`);
                 alert("Warga Berhasil Ditambahkan!");
                 document.getElementById('new-nama').value = "";
                 document.getElementById('new-nominal').value = "";
-                fetchInitialData(); // Reload data
-            } catch(e) { alert("Selesai. Cek Sheet Pelanggan."); fetchInitialData(); }
+                fetchInitialData();
+            } catch(e) { fetchInitialData(); }
             btn.innerText = "SIMPAN";
             btn.disabled = false;
+        }
+
+        async function prosesGenerate() {
+            const bln = document.getElementById('bulan-input').value;
+            const thn = document.getElementById('tahun-input').value;
+            if(!confirm(`Buat tagihan ${bln} ${thn} untuk semua warga?`)) return;
+            const btn = document.getElementById('btn-gen');
+            btn.innerText = "PROSES...";
+            try {
+                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}`);
+                alert("Tagihan Berhasil Dibuat!");
+                fetchInitialData();
+            } catch(e) { fetchInitialData(); }
+            btn.innerText = "Generate Tagihan";
+        }
+
+        async function bayar(id) {
+            if(!confirm("Konfirmasi Pembayaran?")) return;
+            try {
+                await fetch(`${API_URL}?action=update&id=${id}`);
+                fetchInitialData();
+            } catch(e) { fetchInitialData(); }
         }
 
         function setFilter(status, el) {
@@ -107,71 +173,6 @@
             renderData();
         }
 
-        async function fetchInitialData() {
-            const area = document.getElementById('area-hasil');
-            area.innerHTML = "<p class='col-span-3 text-[8px] animate-pulse py-4 text-gray-500'>SINKRONISASI...</p>";
-            try {
-                const res = await fetch(`${API_URL}?action=read`);
-                dataMaster = await res.json();
-                
-                // Hitung Statistik
-                const belumBayar = dataMaster.filter(d => d.lunas == false).length;
-                const totalUang = dataMaster.filter(d => d.lunas == true).reduce((sum, item) => sum + Number(item.jumlah), 0);
-                document.getElementById('stat-belum-bayar').innerText = belumBayar;
-                document.getElementById('stat-total-uang').innerText = "Rp " + totalUang.toLocaleString('id-ID');
-                
-                renderData();
-            } catch(e) { area.innerHTML = "<p class='col-span-3 text-[8px] text-red-500'>GAGAL LOAD DATA</p>"; }
-        }
-
-        function renderData() {
-            const namaCari = document.getElementById('cari-nama').value.toUpperCase();
-            const area = document.getElementById('area-hasil');
-            let hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(namaCari));
-
-            if (filterStatus === 'belum') hasil = hasil.filter(d => d.lunas === false);
-            if (filterStatus === 'lunas') hasil = hasil.filter(d => d.lunas === true);
-
-            area.innerHTML = hasil.length ? "" : "<p class='col-span-3 text-[8px] py-4 text-gray-700 uppercase'>Data Tidak Ditemukan</p>";
-            
-            hasil.forEach(h => {
-                area.innerHTML += `
-                <div class="p-2 card rounded-xl flex flex-col justify-between border-t-2 ${h.lunas ? 'border-green-500/40' : 'border-red-500/30'}">
-                    <div class="mb-1">
-                        <p class="text-[6px] text-gray-500 font-bold uppercase truncate-text">${h.bulan}</p>
-                        <p class="font-black text-white text-[9px]">Rp${(h.jumlah/1000).toLocaleString()}K</p>
-                        <p class="text-[7px] text-gray-300 uppercase truncate-text font-medium">${h.nama}</p>
-                    </div>
-                    <button ${h.lunas ? '' : `onclick="bayar('${h.id}')"`} class="${h.lunas ? 'bg-green-900/40 text-green-500' : 'bg-green-600 text-white'} w-full py-1 rounded-md text-[7px] font-black uppercase active:scale-95 transition-all">
-                        ${h.lunas ? 'OK' : 'BAYAR'}
-                    </button>
-                </div>`;
-            });
-        }
-
-        async function bayar(id) {
-            if(!confirm("Konfirmasi Pelunasan?")) return;
-            try {
-                await fetch(`${API_URL}?action=update&id=${id}`);
-                fetchInitialData();
-            } catch(e) { alert("Proses Selesai."); fetchInitialData(); }
-        }
-
-        async function prosesGenerate() {
-            const bln = document.getElementById('bulan-input').value;
-            const thn = document.getElementById('tahun-input').value;
-            if(!confirm(`Generate tagihan ${bln} ${thn}?`)) return;
-            const btn = document.getElementById('btn-gen');
-            btn.innerText = "...";
-            try {
-                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}`);
-                alert("Tagihan Berhasil Dibuat!");
-                fetchInitialData();
-            } catch(e) { alert("Selesai!"); fetchInitialData(); }
-            btn.innerText = "Generate Tagihan";
-        }
-
-        // Load data otomatis saat halaman dibuka
         window.onload = fetchInitialData;
     </script>
 </body>
