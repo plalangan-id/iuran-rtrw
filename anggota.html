@@ -7,26 +7,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; }
-        .premium-card { background: #111114; border: 1px solid rgba(255,255,255,0.05); }
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); }
+        .premium-card { background: rgba(17, 17, 20, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .gold-button { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: bold; }
+        .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body class="p-6">
-    <div class="max-w-sm mx-auto space-y-10 text-center pt-10">
+    <div class="max-w-md mx-auto space-y-8 text-center pt-6">
         <div>
-            <h1 class="text-4xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase mt-2 font-bold italic">Member Portal 2026</p>
+            <h1 class="text-3xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
+            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic">Member Portal 2026</p>
         </div>
 
-        <div class="premium-card p-8 rounded-[40px] shadow-2xl">
-            <h2 class="text-xs font-bold text-[#d4af37] uppercase mb-4 tracking-widest">Cek Tagihan</h2>
-            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-3 text-xl font-bold text-center outline-none focus:border-[#d4af37] mb-6 uppercase text-white" placeholder="NAMA ANDA">
-            <button onclick="cek()" id="btn-cek" class="gold-button w-full py-4 rounded-2xl uppercase">Periksa Sekarang</button>
+        <div class="premium-card p-6 rounded-[30px] shadow-2xl">
+            <h2 class="text-[10px] font-bold text-[#d4af37] uppercase mb-3 tracking-widest">Cek Tagihan Warga</h2>
+            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-2 text-lg font-bold text-center outline-none focus:border-[#d4af37] mb-5 uppercase text-white placeholder:text-white/5" placeholder="KETIK NAMA ANDA">
+            <button onclick="cek()" id="btn-cek" class="gold-button w-full py-3 rounded-xl uppercase text-xs tracking-widest active:scale-95 transition-all">Periksa Sekarang</button>
         </div>
 
-        <div id="hasil" class="hidden space-y-4"></div>
-        <p class="text-[10px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-10">PLALANGAN.NET 2026</p>
+        <div id="hasil" class="grid grid-cols-2 gap-3 hidden">
+            </div>
+
+        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4">PLALANGAN.NET &copy; 2026</p>
     </div>
 
     <script>
@@ -38,9 +41,11 @@
             const resBox = document.getElementById('hasil');
             
             if(!nama) return alert("Masukkan nama!");
+            
             btn.innerText = "MENCARI...";
+            btn.disabled = true;
             resBox.innerHTML = "";
-            resBox.classList.remove('hidden');
+            resBox.classList.add('hidden');
 
             try {
                 const response = await fetch(`${API_URL}?action=read`);
@@ -48,21 +53,29 @@
                 const userTagihan = data.filter(d => d.nama.toUpperCase().includes(nama));
 
                 if(userTagihan.length == 0) {
-                    resBox.innerHTML = "<div class='premium-card p-6 rounded-3xl text-red-500 font-bold uppercase'>Data tidak ditemukan</div>";
+                    resBox.classList.remove('hidden');
+                    resBox.innerHTML = "<div class='col-span-2 premium-card p-4 rounded-2xl text-red-500 text-[10px] font-bold uppercase'>Data tidak ditemukan</div>";
                 } else {
+                    resBox.classList.remove('hidden');
                     userTagihan.forEach(t => {
                         const statusColor = t.lunas ? "text-green-500" : "text-red-500";
-                        const statusTxt = t.lunas ? "SUDAH LUNAS" : "BELUM BAYAR";
+                        const statusBg = t.lunas ? "border-green-500/30" : "border-red-500/30";
+                        const statusTxt = t.lunas ? "LUNAS" : "BELUM BAYAR";
+                        
                         resBox.innerHTML += `
-                            <div class="premium-card p-8 rounded-[40px] border-t-4 ${t.lunas ? 'border-green-500' : 'border-red-500'}">
-                                <h2 class="text-lg font-black tracking-wide ${statusColor}">${statusTxt}</h2>
-                                <p class="text-4xl font-bold mt-2 text-white">Rp ${t.jumlah.toLocaleString()}</p>
-                                <p class="text-base font-bold mt-6 text-gray-400 uppercase">${t.bulan} ${t.tahun}</p>
+                            <div class="premium-card p-4 rounded-2xl border-t-2 ${statusBg} flex flex-col justify-center">
+                                <h2 class="text-[8px] font-black tracking-tighter ${statusColor} mb-1">${statusTxt}</h2>
+                                <p class="text-lg font-black text-white leading-none">Rp${(t.jumlah/1000).toLocaleString()}K</p>
+                                <p class="text-[9px] font-bold mt-2 text-gray-500 uppercase truncate-text">${t.bulan} ${t.tahun}</p>
                             </div>`;
                     });
                 }
-            } catch(e) { alert("Gagal mengambil data."); }
-            btn.innerText = "PERIKSA SEKARANG";
+            } catch(e) { 
+                alert("Gagal mengambil data."); 
+            } finally {
+                btn.innerText = "PERIKSA SEKARANG";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
