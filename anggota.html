@@ -13,26 +13,57 @@
     </style>
 </head>
 <body class="p-6">
-    <div class="max-w-sm mx-auto space-y-10 text-center">
-        <div class="pt-10">
+    <div class="max-w-sm mx-auto space-y-10 text-center pt-10">
+        <div>
             <h1 class="text-4xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase mt-2 font-bold italic">Internet Cepat & Stabil</p>
+            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase mt-2 font-bold italic">Member Portal 2026</p>
         </div>
 
         <div class="premium-card p-8 rounded-[40px] shadow-2xl">
             <h2 class="text-xs font-bold text-[#d4af37] uppercase mb-4 tracking-widest">Cek Tagihan</h2>
             <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-3 text-xl font-bold text-center outline-none focus:border-[#d4af37] mb-6 uppercase" placeholder="NAMA ANDA">
-            <button onclick="cek()" class="gold-button w-full py-4 rounded-2xl uppercase">Periksa Sekarang</button>
+            <button onclick="cek()" id="btn-cek" class="gold-button w-full py-4 rounded-2xl uppercase">Periksa Sekarang</button>
         </div>
 
-        <div id="hasil" class="hidden">
-            <div id="kartu" class="premium-card p-8 rounded-[40px] border-t-4 text-center">
-                <h2 id="h-status" class="text-lg font-black tracking-wide"></h2>
-                <p id="h-total" class="text-4xl font-bold mt-2"></p>
-                <p id="h-bulan" class="text-base font-bold mt-6 text-gray-300"></p>
-            </div>
-        </div>
+        <div id="hasil" class="hidden space-y-4"></div>
         <p class="text-[10px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-10">PLALANGAN.NET 2026</p>
     </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyhdoTApMbVvgMifbfKj-lb53L1VzV1NpeXJ1MQIruXwShmsmO-IIFsIaWu3qC-1mHLww/exec";
+
+        async function cek() {
+            const nama = document.getElementById('nama-user').value.toUpperCase();
+            const btn = document.getElementById('btn-cek');
+            const resBox = document.getElementById('hasil');
+            
+            if(!nama) return alert("Masukkan nama!");
+            btn.innerText = "MENCARI...";
+            resBox.innerHTML = "";
+            resBox.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${API_URL}?action=read`);
+                const data = await response.json();
+                const userTagihan = data.filter(d => d.nama.toUpperCase().includes(nama));
+
+                if(userTagihan.length == 0) {
+                    resBox.innerHTML = "<div class='premium-card p-6 rounded-3xl text-red-500 font-bold uppercase'>Data tidak ditemukan</div>";
+                } else {
+                    userTagihan.forEach(t => {
+                        const statusColor = t.lunas ? "text-green-500" : "text-red-500";
+                        const statusTxt = t.lunas ? "LUNAS - TERIMA KASIH" : "BELUM DIBAYAR";
+                        resBox.innerHTML += `
+                            <div class="premium-card p-8 rounded-[40px] border-t-4 ${t.lunas ? 'border-green-500' : 'border-red-500'}">
+                                <h2 class="text-lg font-black tracking-wide ${statusColor}">${statusTxt}</h2>
+                                <p class="text-4xl font-bold mt-2">Rp ${t.jumlah.toLocaleString()}</p>
+                                <p class="text-base font-bold mt-6 text-gray-400 uppercase">${t.bulan} ${t.tahun}</p>
+                            </div>`;
+                    });
+                }
+            } catch(e) { alert("Gagal mengambil data."); }
+            btn.innerText = "PERIKSA SEKARANG";
+        }
+    </script>
 </body>
 </html>
