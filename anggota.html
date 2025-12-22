@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cek Tagihan - PLALANGAN.NET</title>
+    <title>Portal Pelanggan - PLALANGAN.NET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
@@ -16,7 +16,7 @@
     <div class="max-w-sm mx-auto space-y-10 text-center pt-10">
         <div>
             <h1 class="text-4xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase mt-2 font-bold italic">Cek Iuran Online</p>
+            <p class="text-gray-500 text-[10px] tracking-[0.3em] uppercase mt-2 font-bold italic">Member Portal 2026</p>
         </div>
 
         <div class="premium-card p-8 rounded-[40px] shadow-2xl">
@@ -30,14 +30,14 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwCZ4F2O4zWeKtvOnJj1N4UC-oIuJwZFUY2ZzhQinZDW3WZJ3qjSndYkc_2cHMj-7NIyw/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzYUCJCK3YclQrJCCWvL_VOiqEBAJAT66u1hNdYZ9QICqxaT2TFQgWRZoUhLcx2M-14QA/exec";
 
         async function cek() {
             const nama = document.getElementById('nama-user').value.toUpperCase();
             const btn = document.getElementById('btn-cek');
             const resBox = document.getElementById('hasil');
             
-            if(!nama) return alert("Masukkan nama anda!");
+            if(!nama) return alert("Masukkan nama!");
             btn.innerText = "MENCARI...";
             resBox.innerHTML = "";
             resBox.classList.remove('hidden');
@@ -52,7 +52,7 @@
                 } else {
                     userTagihan.forEach(t => {
                         const statusColor = t.lunas ? "text-green-500" : "text-red-500";
-                        const statusTxt = t.lunas ? "LUNAS" : "BELUM BAYAR";
+                        const statusTxt = t.lunas ? "SUDAH LUNAS" : "BELUM BAYAR";
                         resBox.innerHTML += `
                             <div class="premium-card p-8 rounded-[40px] border-t-4 ${t.lunas ? 'border-green-500' : 'border-red-500'}">
                                 <h2 class="text-lg font-black tracking-wide ${statusColor}">${statusTxt}</h2>
