@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - PLALANGAN.NET</title>
+    <title>Admin - PLALANGAN.NET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
@@ -15,8 +15,8 @@
 <body class="p-6">
     <div class="max-w-md mx-auto space-y-8">
         <div class="text-center pt-4">
-            <h1 class="text-2xl font-black text-[#d4af37]">ADMIN <span class="text-white">SYSTEM</span></h1>
-            <p class="text-gray-500 text-[10px] tracking-widest uppercase mt-1">Sistem Otomatis 2026</p>
+            <h1 class="text-2xl font-black text-[#d4af37]">ADMIN <span class="text-white">PANEL</span></h1>
+            <p class="text-gray-500 text-[10px] tracking-widest uppercase mt-1">Sistem Iuran RTRW</p>
         </div>
 
         <div class="card p-6 rounded-[30px] border-b-4 border-[#d4af37]/20 shadow-2xl">
@@ -45,26 +45,26 @@
 
         <div class="card p-6 rounded-[30px]">
             <h2 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest text-center">Input Pembayaran</h2>
-            <input type="text" id="cari-nama" placeholder="CARI NAMA..." class="w-full bg-transparent border-b border-white/10 p-3 text-center text-lg font-bold outline-none uppercase">
+            <input type="text" id="cari-nama" placeholder="CARI NAMA..." class="w-full bg-transparent border-b border-white/10 p-3 text-center text-lg font-bold outline-none uppercase text-white">
             <button onclick="cariData()" id="btn-cari" class="w-full bg-white/5 py-3 rounded-xl mt-4 font-bold text-sm uppercase">Cari Data</button>
             <div id="area-hasil" class="mt-6 space-y-3"></div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyhdoTApMbVvgMifbfKj-lb53L1VzV1NpeXJ1MQIruXwShmsmO-IIFsIaWu3qC-1mHLww/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwCZ4F2O4zWeKtvOnJj1N4UC-oIuJwZFUY2ZzhQinZDW3WZJ3qjSndYkc_2cHMj-7NIyw/exec";
 
         async function prosesGenerate() {
             const bulan = document.getElementById('bulan-input').value;
             const tahun = document.getElementById('tahun-input').value;
-            if(!confirm(`Buat tagihan untuk SEMUA nama di bulan ${bulan} ${tahun}?`)) return;
+            if(!confirm(`Generate tagihan bulan ${bulan}?`)) return;
             const btn = document.getElementById('btn-gen');
             btn.innerText = "SEDANG BEKERJA...";
             btn.disabled = true;
             try {
                 const response = await fetch(`${API_URL}?action=generate&bulan=${bulan}&tahun=${tahun}`);
                 const res = await response.json();
-                alert("Berhasil! " + res.count + " Tagihan dibuat.");
+                alert("Berhasil! " + res.count + " tagihan dibuat.");
             } catch(e) { alert("Selesai! Cek Google Sheets anda."); }
             btn.innerText = "Generate Tagihan Baru";
             btn.disabled = false;
@@ -72,6 +72,7 @@
 
         async function cariData() {
             const nama = document.getElementById('cari-nama').value.toUpperCase();
+            if(!nama) return alert("Ketik nama dulu");
             const area = document.getElementById('area-hasil');
             area.innerHTML = "Mencari...";
             try {
@@ -79,21 +80,23 @@
                 const data = await res.json();
                 const hasil = data.filter(d => d.nama.toUpperCase().includes(nama) && d.lunas == false);
                 area.innerHTML = "";
-                if(hasil.length == 0) area.innerHTML = "Tidak ada tagihan.";
+                if(hasil.length == 0) area.innerHTML = "Tidak ada tagihan tertunggak.";
                 hasil.forEach(h => {
                     area.innerHTML += `<div class="p-4 card rounded-2xl flex justify-between items-center text-left">
-                        <div><p class="text-[10px] text-gray-500">${h.bulan}</p><p class="font-bold">Rp ${h.jumlah}</p></div>
-                        <button onclick="bayar('${h.id}')" class="bg-green-600 px-4 py-2 rounded-xl text-[10px] font-bold">LUNAS</button>
+                        <div><p class="text-[10px] text-gray-500">${h.bulan}</p><p class="font-bold text-white">Rp ${h.jumlah.toLocaleString()}</p></div>
+                        <button onclick="bayar('${h.id}')" class="bg-green-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white uppercase">LUNAS</button>
                     </div>`;
                 });
             } catch(e) { area.innerHTML = "Gagal memuat."; }
         }
 
         async function bayar(id) {
-            if(!confirm("Yakin lunas?")) return;
-            await fetch(`${API_URL}?action=update&id=${id}`);
-            alert("Berhasil!");
-            cariData();
+            if(!confirm("Proses pelunasan?")) return;
+            try {
+                await fetch(`${API_URL}?action=update&id=${id}`);
+                alert("Pembayaran Berhasil!");
+                cariData();
+            } catch(e) { alert("Gagal update data."); }
         }
     </script>
 </body>
