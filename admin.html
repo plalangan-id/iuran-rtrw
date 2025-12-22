@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - PLALANGAN.NET</title>
+    <title>Admin Panel - PLALANGAN.NET</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
         body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; }
         .card { background: #111114; border: 1px solid rgba(255,255,255,0.05); }
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: bold; }
@@ -13,13 +15,108 @@
 </head>
 <body class="p-6">
     <div class="max-w-md mx-auto space-y-8">
-        <h1 class="text-2xl font-black text-[#d4af37] text-center uppercase">Admin Panel</h1>
-        
-        <div class="card p-6 rounded-[30px] shadow-2xl">
-            <h2 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest text-center">Update Pembayaran</h2>
-            <input type="text" id="cari-nama" placeholder="CARI NAMA..." class="w-full bg-transparent border-b border-white/10 p-3 text-center text-lg font-bold outline-none uppercase mb-4">
-            <button class="gold-btn w-full py-4 rounded-2xl uppercase shadow-lg">Cari & Proses</button>
+        <div class="text-center pt-4">
+            <h1 class="text-2xl font-black text-[#d4af37]">ADMIN <span class="text-white">SYSTEM</span></h1>
+            <p class="text-gray-500 text-[10px] tracking-widest uppercase mt-1">Manajemen Tagihan Otomatis</p>
+        </div>
+
+        <div class="card p-6 rounded-[30px] border-b-4 border-[#d4af37]/20 shadow-2xl">
+            <h2 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Buat Tagihan Masal</h2>
+            <div class="flex gap-2">
+                <select id="bulan-input" class="flex-1 bg-black/50 border border-white/10 p-3 rounded-xl text-white outline-none focus:border-[#d4af37]">
+                    <option value="Januari">Januari</option>
+                    <option value="Februari">Februari</option>
+                    <option value="Maret">Maret</option>
+                    <option value="April">April</option>
+                    <option value="Mei">Mei</option>
+                    <option value="Juni">Juni</option>
+                    <option value="Juli">Juli</option>
+                    <option value="Agustus">Agustus</option>
+                    <option value="September">September</option>
+                    <option value="Oktober">Oktober</option>
+                    <option value="November">November</option>
+                    <option value="Desember">Desember</option>
+                </select>
+                <input type="number" id="tahun-input" value="2026" class="w-24 bg-black/50 border border-white/10 p-3 rounded-xl text-center outline-none text-white">
+            </div>
+            <button onclick="prosesGenerate()" id="btn-gen" class="gold-btn w-full py-4 rounded-2xl mt-4 shadow-lg active:scale-95 transition-all uppercase text-sm">
+                Generate Tagihan Baru
+            </button>
+        </div>
+
+        <div class="card p-6 rounded-[30px]">
+            <h2 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest text-center">Input Pembayaran</h2>
+            <input type="text" id="cari-nama" placeholder="KETIK NAMA PELANGGAN" class="w-full bg-transparent border-b border-white/10 p-3 text-center text-lg font-bold outline-none focus:border-[#d4af37] uppercase text-white">
+            <button onclick="cariData()" id="btn-cari" class="w-full bg-white/5 py-3 rounded-xl mt-4 font-bold text-sm uppercase tracking-widest hover:bg-white/10 transition">Cari Data</button>
+            
+            <div id="area-hasil" class="mt-6 space-y-4 text-center">
+                </div>
         </div>
     </div>
+
+    <script>
+        // GANTI INI dengan URL dari Google Apps Script kamu nanti
+        const API_URL = "URL_APPS_SCRIPT_BARU_KAMU"; 
+
+        async function prosesGenerate() {
+            const bulan = document.getElementById('bulan-input').value;
+            const tahun = document.getElementById('tahun-input').value;
+            if(!confirm(`Buat tagihan untuk SEMUA nama di bulan ${bulan} ${tahun}?`)) return;
+
+            const btn = document.getElementById('btn-gen');
+            btn.innerText = "SEDANG BEKERJA...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}?action=generate&bulan=${bulan}&tahun=${tahun}`);
+                const res = await response.json();
+                alert("Berhasil! " + res.count + " Tagihan baru telah dibuat.");
+            } catch(e) { alert("Gagal koneksi ke server."); }
+
+            btn.innerText = "Generate Tagihan Baru";
+            btn.disabled = false;
+        }
+
+        async function cariData() {
+            const nama = document.getElementById('cari-nama').value.trim().toUpperCase();
+            if(!nama) return alert("Masukkan nama!");
+
+            const area = document.getElementById('area-hasil');
+            area.innerHTML = "<p class='text-gray-500 animate-pulse'>Mencari...</p>";
+
+            try {
+                const response = await fetch(`${API_URL}?action=read`);
+                const data = await response.json();
+                const hasil = data.filter(d => d.nama.toUpperCase() === nama && d.lunas === false);
+
+                if(hasil.length === 0) {
+                    area.innerHTML = "<p class='text-green-500 font-bold'>SEMUA SUDAH LUNAS</p>";
+                } else {
+                    area.innerHTML = "";
+                    hasil.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = "p-4 border border-white/5 rounded-2xl bg-white/5 flex justify-between items-center";
+                        div.innerHTML = `
+                            <div class="text-left">
+                                <p class="text-[10px] text-gray-500 uppercase">${item.bulan}</p>
+                                <p class="font-bold">Rp ${item.jumlah.toLocaleString()}</p>
+                            </div>
+                            <button onclick="bayar('${item.id}')" class="bg-green-600 px-4 py-2 rounded-lg text-xs font-bold uppercase">Lunaskan</button>
+                        `;
+                        area.appendChild(div);
+                    });
+                }
+            } catch(e) { area.innerHTML = "Gagal memuat data."; }
+        }
+
+        async function bayar(id) {
+            if(!confirm("Tandai sebagai Lunas?")) return;
+            try {
+                await fetch(`${API_URL}?action=update&id=${id}`);
+                alert("Berhasil diperbarui!");
+                cariData(); // Refresh daftar
+            } catch(e) { alert("Gagal update."); }
+        }
+    </script>
 </body>
 </html>
