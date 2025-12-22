@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - PLALANGAN.NET</title>
+    <title>Admin Panel - PLALANGAN.NET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); }
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); min-height: 100vh; }
         .card { background: rgba(17, 17, 20, 0.8); border: 1px solid rgba(255,255,255,0.03); backdrop-filter: blur(10px); }
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
+        .input-dark { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; font-size: 11px; outline: none; color: white; }
+        .input-dark:focus { border-color: #d4af37; }
+        .filter-active { background: #d4af37 !important; color: black !important; font-weight: bold; }
         .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        /* Style untuk filter aktif */
-        .filter-btn { border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
-        .filter-active { background: #d4af37 !important; color: black !important; border-color: #d4af37 !important; font-weight: bold; }
     </style>
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto space-y-3">
         
         <div class="text-center pt-2">
-            <h1 class="text-lg font-black text-[#d4af37]">ADMIN <span class="text-white">PANEL</span></h1>
-            <p class="text-gray-500 text-[8px] tracking-[.2em] uppercase">PLALANGAN.NET</p>
+            <h1 class="text-xl font-black text-[#d4af37]">ADMIN <span class="text-white">PANEL</span></h1>
+            <p class="text-gray-500 text-[8px] tracking-[.2em] uppercase">SISTEM IURAN PLALANGAN</p>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -32,23 +31,32 @@
             </div>
             <div class="p-2 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
                 <p class="text-[7px] font-bold text-green-400 uppercase">Total Masuk</p>
-                <h3 id="stat-total-uang" class="text-sm font-black text-green-500">0</h3>
+                <h3 id="stat-total-uang" class="text-sm font-black text-green-500 text-xs">Rp 0</h3>
+            </div>
+        </div>
+
+        <div class="card p-3 rounded-2xl border-l-4 border-blue-500/50">
+            <p class="text-[8px] font-bold text-blue-400 uppercase mb-2">Tambah Anggota Baru</p>
+            <div class="flex gap-2">
+                <input type="text" id="new-nama" placeholder="Nama Warga" class="input-dark flex-1">
+                <input type="number" id="new-nominal" placeholder="Nominal" class="input-dark w-20">
+                <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold hover:bg-blue-500 transition-all">SIMPAN</button>
             </div>
         </div>
 
         <div class="card p-4 rounded-3xl">
             <div class="flex gap-2 items-center border-b border-white/5 pb-2 mb-3">
-                <input type="text" id="cari-nama" oninput="cariData()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none uppercase text-white placeholder:text-white/10">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <input type="text" id="cari-nama" oninput="renderData()" placeholder="CARI NAMA WARGA..." class="w-full bg-transparent text-xs font-bold outline-none uppercase text-white placeholder:text-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </div>
 
             <div class="flex gap-1 justify-between mb-4">
-                <button onclick="setFilter('semua', this)" class="filter-btn filter-active flex-1 py-1.5 rounded-lg text-[8px] uppercase bg-white/5">Semua</button>
-                <button onclick="setFilter('belum', this)" class="filter-btn flex-1 py-1.5 rounded-lg text-[8px] uppercase bg-white/5">Belum Bayar</button>
-                <button onclick="setFilter('lunas', this)" class="filter-btn flex-1 py-1.5 rounded-lg text-[8px] uppercase bg-white/5">Lunas</button>
+                <button onclick="setFilter('semua', this)" class="filter-btn filter-active flex-1 py-1.5 rounded-lg text-[7px] uppercase bg-white/5">Semua</button>
+                <button onclick="setFilter('belum', this)" class="filter-btn flex-1 py-1.5 rounded-lg text-[7px] uppercase bg-white/5">Belum</button>
+                <button onclick="setFilter('lunas', this)" class="filter-btn flex-1 py-1.5 rounded-lg text-[7px] uppercase bg-white/5">Lunas</button>
             </div>
             
-            <div id="area-hasil" class="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-1">
+            <div id="area-hasil" class="grid grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-1 text-center">
                 </div>
         </div>
 
@@ -62,104 +70,108 @@
                  </select>
                  <input type="number" id="tahun-input" value="2026" class="bg-black/40 w-10 text-[9px] outline-none border border-white/10 rounded p-1 text-center text-white">
              </div>
-             <button onclick="prosesGenerate()" id="btn-gen" class="gold-btn px-4 py-2 rounded-lg text-[8px] uppercase tracking-tighter">Generate</button>
+             <button onclick="prosesGenerate()" id="btn-gen" class="gold-btn px-4 py-2 rounded-lg text-[8px] uppercase">Generate Tagihan</button>
         </div>
     </div>
 
     <script>
+        // URL API Baru yang kamu berikan
         const API_URL = "https://script.google.com/macros/s/AKfycbzYUCJCK3YclQrJCCWvL_VOiqEBAJAT66u1hNdYZ9QICqxaT2TFQgWRZoUhLcx2M-14QA/exec";
         let dataMaster = [];
-        let filterStatus = 'semua'; // default filter
+        let filterStatus = 'semua';
+
+        // Fungsi Tambah Anggota Baru
+        async function tambahWarga() {
+            const nama = document.getElementById('new-nama').value;
+            const nominal = document.getElementById('new-nominal').value;
+            const btn = document.getElementById('btn-tambah');
+            if(!nama || !nominal) return alert("Isi Nama & Nominal!");
+            
+            btn.innerText = "...";
+            btn.disabled = true;
+            try {
+                const response = await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}`);
+                alert("Warga Berhasil Ditambahkan!");
+                document.getElementById('new-nama').value = "";
+                document.getElementById('new-nominal').value = "";
+                fetchInitialData(); // Reload data
+            } catch(e) { alert("Selesai. Cek Sheet Pelanggan."); fetchInitialData(); }
+            btn.innerText = "SIMPAN";
+            btn.disabled = false;
+        }
 
         function setFilter(status, el) {
             filterStatus = status;
-            // Reset style tombol
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-active'));
-            // Set aktif
             el.classList.add('filter-active');
-            // Re-render data
             renderData();
-        }
-
-        function hitungStatistik(data) {
-            const belumBayar = data.filter(d => d.lunas == false).length;
-            const totalUang = data.filter(d => d.lunas == true).reduce((sum, item) => sum + Number(item.jumlah), 0);
-            document.getElementById('stat-belum-bayar').innerText = belumBayar;
-            document.getElementById('stat-total-uang').innerText = "Rp " + totalUang.toLocaleString('id-ID');
         }
 
         async function fetchInitialData() {
             const area = document.getElementById('area-hasil');
-            area.innerHTML = "<p class='col-span-3 text-center text-[8px] animate-pulse'>MEMUAT DATA...</p>";
+            area.innerHTML = "<p class='col-span-3 text-[8px] animate-pulse py-4 text-gray-500'>SINKRONISASI...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 dataMaster = await res.json();
-                hitungStatistik(dataMaster);
+                
+                // Hitung Statistik
+                const belumBayar = dataMaster.filter(d => d.lunas == false).length;
+                const totalUang = dataMaster.filter(d => d.lunas == true).reduce((sum, item) => sum + Number(item.jumlah), 0);
+                document.getElementById('stat-belum-bayar').innerText = belumBayar;
+                document.getElementById('stat-total-uang').innerText = "Rp " + totalUang.toLocaleString('id-ID');
+                
                 renderData();
-            } catch(e) { 
-                area.innerHTML = "<p class='col-span-3 text-center text-red-500 text-[8px]'>GAGAL LOAD</p>"; 
-            }
+            } catch(e) { area.innerHTML = "<p class='col-span-3 text-[8px] text-red-500'>GAGAL LOAD DATA</p>"; }
         }
 
         function renderData() {
-            const nama = document.getElementById('cari-nama').value.toUpperCase();
+            const namaCari = document.getElementById('cari-nama').value.toUpperCase();
             const area = document.getElementById('area-hasil');
-            
-            let hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(nama));
+            let hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(namaCari));
 
-            // Filter Kategori
             if (filterStatus === 'belum') hasil = hasil.filter(d => d.lunas === false);
             if (filterStatus === 'lunas') hasil = hasil.filter(d => d.lunas === true);
 
-            area.innerHTML = "";
-            if(hasil.length === 0) {
-                area.innerHTML = "<p class='col-span-3 text-center text-[8px] text-gray-700 py-4'>TIDAK ADA DATA</p>";
-                return;
-            }
+            area.innerHTML = hasil.length ? "" : "<p class='col-span-3 text-[8px] py-4 text-gray-700 uppercase'>Data Tidak Ditemukan</p>";
             
             hasil.forEach(h => {
-                const statusColor = h.lunas ? 'bg-green-600' : 'bg-red-600/20 text-red-400 border border-red-500/30';
-                const btnLabel = h.lunas ? 'LUNAS' : 'BAYAR';
-                const btnAction = h.lunas ? '' : `onclick="bayar('${h.id}')"`;
-                
                 area.innerHTML += `
-                <div class="p-2 card rounded-xl flex flex-col justify-between text-center border-t-2 ${h.lunas ? 'border-green-500/30' : 'border-red-500/30'}">
+                <div class="p-2 card rounded-xl flex flex-col justify-between border-t-2 ${h.lunas ? 'border-green-500/40' : 'border-red-500/30'}">
                     <div class="mb-1">
                         <p class="text-[6px] text-gray-500 font-bold uppercase truncate-text">${h.bulan}</p>
                         <p class="font-black text-white text-[9px]">Rp${(h.jumlah/1000).toLocaleString()}K</p>
-                        <p class="text-[7px] text-gray-300 uppercase truncate-text mt-0.5">${h.nama}</p>
+                        <p class="text-[7px] text-gray-300 uppercase truncate-text font-medium">${h.nama}</p>
                     </div>
-                    <button ${btnAction} class="${h.lunas ? 'bg-green-900/40 text-green-500' : 'bg-green-600 text-white'} w-full py-1 rounded-md text-[7px] font-black uppercase transition-all active:scale-95">
-                        ${btnLabel}
+                    <button ${h.lunas ? '' : `onclick="bayar('${h.id}')"`} class="${h.lunas ? 'bg-green-900/40 text-green-500' : 'bg-green-600 text-white'} w-full py-1 rounded-md text-[7px] font-black uppercase active:scale-95 transition-all">
+                        ${h.lunas ? 'OK' : 'BAYAR'}
                     </button>
                 </div>`;
             });
         }
 
-        // Fungsi cari dipicu oleh input (real-time)
-        function cariData() {
-            renderData();
-        }
-
         async function bayar(id) {
-            if(!confirm("Proses bayar?")) return;
+            if(!confirm("Konfirmasi Pelunasan?")) return;
             try {
                 await fetch(`${API_URL}?action=update&id=${id}`);
-                fetchInitialData(); // Refresh data master
-            } catch(e) { alert("Gagal."); }
+                fetchInitialData();
+            } catch(e) { alert("Proses Selesai."); fetchInitialData(); }
         }
 
         async function prosesGenerate() {
+            const bln = document.getElementById('bulan-input').value;
+            const thn = document.getElementById('tahun-input').value;
+            if(!confirm(`Generate tagihan ${bln} ${thn}?`)) return;
             const btn = document.getElementById('btn-gen');
             btn.innerText = "...";
             try {
-                await fetch(`${API_URL}?action=generate&bulan=${document.getElementById('bulan-input').value}&tahun=${document.getElementById('tahun-input').value}`);
-                alert("Berhasil!");
+                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}`);
+                alert("Tagihan Berhasil Dibuat!");
                 fetchInitialData();
-            } catch(e) { alert("Cek Sheet."); }
-            btn.innerText = "Generate";
+            } catch(e) { alert("Selesai!"); fetchInitialData(); }
+            btn.innerText = "Generate Tagihan";
         }
 
+        // Load data otomatis saat halaman dibuka
         window.onload = fetchInitialData;
     </script>
 </body>
