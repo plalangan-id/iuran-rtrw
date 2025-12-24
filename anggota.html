@@ -6,30 +6,61 @@
     <title>Portal - PLALANGAN.NET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
+        
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); min-height: 100vh; }
         .premium-card { background: rgba(17, 17, 20, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .gold-button { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: bold; }
-        .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        /* STYLE KARTU PERSIS ADMIN (BAGI 2) */
+        .card-custom { 
+            background: #151517; 
+            border-radius: 15px; 
+            border-top: 4px solid #ff0000; 
+            padding: 12px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .card-lunas { border-top: 4px solid #10b981 !important; }
+        
+        /* SISI KIRI */
+        .status-txt { font-size: 7px; font-weight: 900; letter-spacing: 1px; margin-bottom: 2px; }
+        .nominal-glow { font-size: 14px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
+        .nominal-lunas { color: #10b981; text-shadow: none; }
+        
+        /* SISI KANAN (TGL RAMPING) */
+        .tgl-label { font-size: 7px; font-weight: 600; color: #6b7280; text-align: center; }
+        .tgl-angka { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 28px; 
+            font-weight: 300; 
+            line-height: 1; 
+            color: #fff; 
+            text-align: center; 
+        }
+        .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; }
     </style>
 </head>
 <body class="p-6">
-    <div class="max-w-md mx-auto space-y-8 text-center pt-6">
-        <div>
+    <div class="max-w-md mx-auto space-y-8 pt-6">
+        <div class="text-center">
             <h1 class="text-3xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic">Member 2026</p>
+            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic text-center">Portal Pelanggan</p>
         </div>
 
-        <div class="premium-card p-6 rounded-[30px] shadow-2xl">
+        <div class="premium-card p-6 rounded-[30px] shadow-2xl text-center">
             <h2 class="text-[10px] font-bold text-[#d4af37] uppercase mb-3 tracking-widest">Cek Tagihan WIFI</h2>
-            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-2 text-lg font-bold text-center outline-none focus:border-[#d4af37] mb-5 uppercase text-white placeholder:text-white/5" placeholder="KETIK NAMA ANDA">
+            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-2 text-lg font-bold text-center outline-none focus:border-[#d4af37] mb-5 uppercase text-white placeholder:text-white/10" placeholder="MASUKKAN NAMA ANDA">
             <button onclick="cek()" id="btn-cek" class="gold-button w-full py-3 rounded-xl uppercase text-xs tracking-widest active:scale-95 transition-all">Periksa Sekarang</button>
         </div>
 
-        <div id="hasil" class="grid grid-cols-2 gap-3 hidden">
+        <div id="hasil" class="grid grid-cols-2 gap-2 hidden">
             </div>
 
-        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4">PLALANGAN.NET &copy; 2026</p>
+        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4 text-center">PLALANGAN.NET &copy; 2025</p>
     </div>
 
     <script>
@@ -50,28 +81,39 @@
             try {
                 const response = await fetch(`${API_URL}?action=read`);
                 const data = await response.json();
-                const userTagihan = data.filter(d => d.nama.toUpperCase().includes(nama));
+                
+                // Jika API admin mengembalikan objek {tagihan, master}, sesuaikan baris ini:
+                // const list = data.tagihan || data; 
+                const list = data.tagihan ? data.tagihan : data;
+                
+                const userTagihan = list.filter(d => d.nama.toUpperCase().includes(nama));
 
                 if(userTagihan.length == 0) {
                     resBox.classList.remove('hidden');
-                    resBox.innerHTML = "<div class='col-span-2 premium-card p-4 rounded-2xl text-red-500 text-[10px] font-bold uppercase'>Data tidak ditemukan</div>";
+                    resBox.innerHTML = "<div class='col-span-2 premium-card p-6 rounded-2xl text-red-500 text-[10px] font-bold uppercase text-center'>Nama tidak terdaftar / Belum ada tagihan</div>";
                 } else {
                     resBox.classList.remove('hidden');
                     userTagihan.forEach(t => {
-                        const statusColor = t.lunas ? "text-green-500" : "text-red-500";
-                        const statusBg = t.lunas ? "border-green-500/30" : "border-red-500/30";
-                        const statusTxt = t.lunas ? "LUNAS" : "BELUM BAYAR";
+                        const lunas = String(t.lunas).toLowerCase() === "true";
                         
                         resBox.innerHTML += `
-                            <div class="premium-card p-4 rounded-2xl border-t-2 ${statusBg} flex flex-col justify-center">
-                                <h2 class="text-[8px] font-black tracking-tighter ${statusColor} mb-1">${statusTxt}</h2>
-                                <p class="text-lg font-black text-white leading-none">Rp${(t.jumlah/1000).toLocaleString()}K</p>
-                                <p class="text-[9px] font-bold mt-2 text-gray-500 uppercase truncate-text">${t.bulan} ${t.tahun}</p>
+                            <div class="card-custom ${lunas ? 'card-lunas' : ''}">
+                                <div class="flex-1 border-r border-white/5 pr-2 flex flex-col justify-center">
+                                    <p class="status-txt ${lunas ? 'text-green-500' : 'text-red-500'} uppercase">
+                                        ${lunas ? 'LUNAS' : 'BELUM BAYAR'}
+                                    </p>
+                                    <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(t.jumlah).toLocaleString('id-ID')}</h2>
+                                </div>
+                                <div class="w-12 flex flex-col justify-center items-center">
+                                    <p class="tgl-label">TGL</p>
+                                    <h1 class="tgl-angka">${t.aktivasi || '0'}</h1>
+                                    <p class="bulan-label truncate">${t.bulan}</p>
+                                </div>
                             </div>`;
                     });
                 }
             } catch(e) { 
-                alert("Gagal mengambil data."); 
+                alert("Koneksi gagal, coba lagi."); 
             } finally {
                 btn.innerText = "PERIKSA SEKARANG";
                 btn.disabled = false;
