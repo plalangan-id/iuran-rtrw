@@ -66,67 +66,77 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzYUCJCK3YclQrJCCWvL_VOiqEBAJAT66u1hNdYZ9QICqxaT2TFQgWRZoUhLcx2M-14QA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzYUCJCK3YclQrJCCWvL_VOiqEBAJAT66u1hNdYZ9QICqxaT2TFQgWRZoUhLcx2M-14QA/exec";
 
-        async function cek() {
-            const cariNama = document.getElementById('nama-user').value.toUpperCase();
-            const btn = document.getElementById('btn-cek');
-            const resBox = document.getElementById('hasil');
-            
-            if(!cariNama) return alert("Masukkan nama!");
-            
-            btn.innerText = "MENCARI...";
-            btn.disabled = true;
-            resBox.innerHTML = "";
-            resBox.classList.add('hidden');
+async function cek() {
+    const cariNama = document.getElementById('nama-user').value.toUpperCase();
+    const btn = document.getElementById('btn-cek');
+    const resBox = document.getElementById('hasil');
+    
+    if(!cariNama) return alert("Masukkan nama!");
+    
+    btn.innerText = "MENCARI...";
+    btn.disabled = true;
+    resBox.innerHTML = "";
+    resBox.classList.add('hidden');
 
-            try {
-                const response = await fetch(`${API_URL}?action=read`);
-                const data = await response.json();
-                const dataArray = data.tagihan ? data.tagihan : data;
+    try {
+        const response = await fetch(`${API_URL}?action=read`);
+        const data = await response.json();
+        
+        // Pastikan mengambil data dari array 'tagihan'
+        const dataArray = data.tagihan ? data.tagihan : data;
+        
+        const userTagihan = dataArray.filter(item => {
+            const n = (item.nama || item.NAMA || "").toString().toUpperCase();
+            return n.includes(cariNama);
+        });
+
+        if(userTagihan.length == 0) {
+            resBox.classList.remove('hidden');
+            resBox.innerHTML = "<div class='col-span-2 premium-card p-6 rounded-2xl text-red-500 text-[10px] font-bold uppercase text-center'>Data tidak ditemukan</div>";
+        } else {
+            resBox.classList.remove('hidden');
+            userTagihan.forEach(t => {
+                // PENERJEMAH DATA SHEET (PASTIKAN NAMA KOLOM SESUAI)
+                const nama = t.nama || t.NAMA || "PELANGGAN";
                 
-                const userTagihan = dataArray.filter(item => {
-                    const n = item.nama || item.NAMA || "";
-                    return n.toUpperCase().includes(cariNama);
-                });
-
-                if(userTagihan.length == 0) {
-                    resBox.classList.remove('hidden');
-                    resBox.innerHTML = "<div class='col-span-2 premium-card p-6 rounded-2xl text-red-500 text-[10px] font-bold uppercase text-center'>Data tidak ditemukan</div>";
-                } else {
-                    resBox.classList.remove('hidden');
-                    userTagihan.forEach(t => {
-                        const nama = t.nama || t.NAMA || "PELANGGAN";
-                        const jumlah = t.jumlah || t.nominal || t.NOMINAL || 0;
-                        const bulan = t.bulan || t.BULAN || "-";
-                        const aktivasi = t.aktivasi || t.AKTIVASI || "0";
-                        const lunas = String(t.lunas || t.LUNAS).toLowerCase() === "true";
-                        
-                        resBox.innerHTML += `
-                            <div class="card-custom ${lunas ? 'card-lunas' : ''}">
-                                <div class="flex gap-1 items-center h-full">
-                                    <div class="flex-1 border-r border-white/5 pr-1 flex flex-col justify-center">
-                                        <p class="nama-txt truncate">${nama}</p>
-                                        <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(jumlah).toLocaleString('id-ID')}</h2>
-                                        <p class="status-kecil ${lunas ? 'text-green-500' : 'text-red-500'}">
-                                            ${lunas ? 'LUNAS' : 'BELUM BAYAR'}
-                                        </p>
-                                    </div>
-                                    <div class="w-12 flex flex-col justify-center items-center">
-                                        <p class="tgl-label">TGL</p>
-                                        <h1 class="tgl-angka">${aktivasi}</h1>
-                                        <p class="bulan-label truncate w-full text-center">${bulan}</p>
-                                    </div>
-                                </div>
-                            </div>`;
-                    });
-                }
-            } catch(e) { 
-                alert("Koneksi gagal."); 
-            } finally {
-                btn.innerText = "PERIKSA SEKARANG";
-                btn.disabled = false;
-            }
+                // Ambil nominal asli tanpa dibagi 1000
+                const nominalAsli = t.jumlah || t.nominal || t.NOMINAL || 0; 
+                
+                const bulan = t.bulan || t.BULAN || "-";
+                const aktivasi = t.aktivasi || t.AKTIVASI || "0";
+                const lunas = String(t.lunas || t.LUNAS).toLowerCase() === "true";
+                
+                resBox.innerHTML += `
+                    <div class="card-custom ${lunas ? 'card-lunas' : ''}">
+                        <div class="flex gap-1 items-center h-full">
+                            <div class="flex-1 border-r border-white/5 pr-1 flex flex-col justify-center text-left">
+                                <h4 class="nama-txt truncate">${nama}</h4>
+                                <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">
+                                    Rp${Number(nominalAsli).toLocaleString('id-ID')}
+                                </h2>
+                                <p class="status-kecil ${lunas ? 'text-green-500' : 'text-red-500'}">
+                                    ${lunas ? 'LUNAS' : 'BELUM BAYAR'}
+                                </p>
+                            </div>
+                            <div class="w-12 flex flex-col justify-center items-center">
+                                <p class="tgl-label">TGL</p>
+                                <h1 class="tgl-angka">${aktivasi}</h1>
+                                <p class="bulan-label truncate w-full text-center">${bulan}</p>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+    } catch(e) { 
+        console.error(e);
+        alert("Gagal sinkronisasi data."); 
+    } finally {
+        btn.innerText = "PERIKSA SEKARANG";
+        btn.disabled = false;
+    }
+}
         }
     </script>
 </body>
