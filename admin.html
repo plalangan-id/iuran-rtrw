@@ -11,75 +11,85 @@
         .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
         
-        /* STYLE KARTU GRID 2 (KOMPAK) */
-        .card-custom { background: #151517; border-radius: 15px; border-top: 3px solid #ff0000; position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        /* UKURAN KARTU YANG DISESUAIKAN (PILIHAN 2) */
+        .card-custom { 
+            background: #151517; 
+            border-radius: 18px; 
+            border-top: 3px solid #ff0000; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            min-height: 125px; /* Tinggi kotak agar pas */
+            padding: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
         .card-lunas { border-top: 3px solid #10b981 !important; }
         
-        .tgl-label { font-size: 7px; font-weight: 800; color: #fff; opacity: 0.6; }
-        .tgl-angka { font-size: 24px; font-weight: 900; line-height: 1; color: #fff; }
+        .tgl-label { font-size: 7px; font-weight: 800; color: #6b7280; text-align: right; }
+        .tgl-angka { font-size: 26px; font-weight: 900; line-height: 1; color: #fff; text-align: right; }
         
-        .nama-pelanggan { font-size: 10px; font-weight: 900; color: #9ca3af; text-transform: uppercase; line-height: 1.2; }
-        .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 8px rgba(255, 49, 49, 0.4); }
+        .nama-pelanggan { font-size: 10px; font-weight: 900; color: #9ca3af; text-transform: uppercase; line-height: 1.1; margin-bottom: 2px; }
+        .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
         .nominal-lunas { color: #10b981; text-shadow: none; }
-        .bulan-tahun { font-size: 7px; font-weight: 800; color: #4b5563; text-transform: uppercase; }
+        .bulan-tahun { font-size: 7px; font-weight: 800; color: #4b5563; text-transform: uppercase; margin-top: 1px; }
         
-        .btn-bayar { background: #ff0000; border-radius: 8px; font-weight: 900; font-size: 9px; padding: 6px 0; transition: 0.2s; }
-        .btn-lunas { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; font-size: 9px; padding: 6px 0; border-radius: 8px; font-weight: 900; }
+        .btn-bayar { background: #ff0000; border-radius: 10px; font-weight: 900; font-size: 9px; padding: 7px 0; margin-top: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(255,0,0,0.2); }
+        .btn-lunas { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; font-size: 9px; padding: 7px 0; border-radius: 10px; font-weight: 900; margin-top: 8px; }
 
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
-        .filter-btn { font-size: 7px; padding: 5px 2px; border-radius: 6px; background: rgba(255,255,255,0.05); flex: 1; }
+        .filter-btn { font-size: 7px; padding: 6px 2px; border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; color: #6b7280; font-weight: bold; }
         .filter-active { background: #d4af37; color: black; font-weight: 900; }
     </style>
 </head>
 <body class="p-4">
-    <div class="max-w-md mx-auto space-y-3">
-        
+    <div class="max-w-md mx-auto space-y-4">
         <div class="text-center pb-1">
-            <h1 class="text-lg font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
+            <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-            <div class="p-2 card rounded-xl border-b-2 border-red-600 text-center">
-                <p class="text-[7px] text-gray-400 font-bold uppercase">BELUM</p>
-                <h3 id="stat-belum" class="text-sm font-black text-red-500">0</h3>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 card rounded-2xl border-b-2 border-red-600 text-center">
+                <p class="text-[8px] text-gray-400 font-bold uppercase">BELUM</p>
+                <h3 id="stat-belum" class="text-lg font-black text-red-500">0</h3>
             </div>
-            <div class="p-2 card rounded-xl border-b-2 border-green-600 text-center">
-                <p class="text-[7px] text-gray-400 font-bold uppercase">MASUK</p>
-                <h3 id="stat-uang" class="text-sm font-black text-green-500 text-xs truncate">Rp 0</h3>
+            <div class="p-3 card rounded-2xl border-b-2 border-green-600 text-center">
+                <p class="text-[8px] text-gray-400 font-bold uppercase">MASUK</p>
+                <h3 id="stat-uang" class="text-lg font-black text-green-500 truncate text-xs">Rp 0</h3>
             </div>
         </div>
 
-        <div class="flex card rounded-xl overflow-hidden">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2 text-[9px] font-black tab-active">TAGIHAN</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2 text-[9px] font-black text-gray-500">MASTER</button>
+        <div class="flex card rounded-2xl overflow-hidden p-1">
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2.5 text-[10px] font-black tab-active rounded-xl transition-all">TAGIHAN</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2.5 text-[10px] font-black text-gray-500 rounded-xl transition-all">MASTER</button>
         </div>
 
-        <div class="card p-3 rounded-2xl min-h-[400px]">
-            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-[10px] font-bold outline-none border-b border-white/10 pb-2 mb-3 uppercase">
+        <div class="card p-4 rounded-[2rem] min-h-[450px]">
+            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-3 mb-4 uppercase tracking-widest">
             
-            <div id="filter-container" class="flex gap-1 mb-4">
+            <div id="filter-container" class="flex gap-1.5 mb-5">
                 <button onclick="setFilter('semua', this)" class="filter-btn filter-active uppercase">SEMUA</button>
                 <button onclick="setFilter('belum', this)" class="filter-btn uppercase">BELUM</button>
                 <button onclick="setFilter('lunas', this)" class="filter-btn uppercase">LUNAS</button>
             </div>
 
-            <div id="area-data" class="grid grid-cols-2 gap-2 max-h-[450px] overflow-y-auto pr-1">
+            <div id="area-data" class="grid grid-cols-2 gap-3 max-h-[480px] overflow-y-auto pr-1">
                 </div>
         </div>
 
-        <div class="card p-2 rounded-xl flex gap-1 items-center">
-            <select id="bln-gen" class="bg-black text-[9px] p-2 rounded flex-1 border border-white/10 outline-none">
+        <div class="card p-3 rounded-2xl flex gap-2 items-center">
+            <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 outline-none">
                 <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
                 <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
                 <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                 <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
             </select>
-            <input type="number" id="thn-gen" value="2025" class="bg-black text-[9px] p-2 rounded w-14 border border-white/10 outline-none">
-            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-2 py-2 rounded-lg text-[7px]">GEN MASSAL</button>
+            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-2.5 rounded-xl w-16 border border-white/10 outline-none text-center">
+            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2.5 rounded-xl text-[8px]">GEN MASSAL</button>
         </div>
     </div>
 
     <script>
+        // KODE JAVASCRIPT TETAP SAMA SEPERTI SEBELUMNYA (TIDAK ADA PERUBAHAN FITUR)
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
         let dataTagihan = [];
         let dataMaster = [];
@@ -88,7 +98,7 @@
 
         async function load() {
             const area = document.getElementById('area-data');
-            area.innerHTML = "<p class='col-span-2 text-center py-10 text-[8px] animate-pulse uppercase'>Sinkronisasi...</p>";
+            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-50 uppercase tracking-widest'>Sinkronisasi...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
@@ -120,14 +130,14 @@
                 hasil.forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
                     area.innerHTML += `
-                    <div class="p-3 card-custom ${lunas ? 'card-lunas' : ''}">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="overflow-hidden">
+                    <div class="card-custom ${lunas ? 'card-lunas' : ''}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 pr-1 overflow-hidden">
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
                                 <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</h2>
                                 <p class="bulan-tahun">${h.bulan} ${h.tahun}</p>
                             </div>
-                            <div class="text-right ml-1">
+                            <div class="w-10">
                                 <p class="tgl-label">TGL</p>
                                 <h1 class="tgl-angka">${h.aktivasi || '00'}</h1>
                             </div>
@@ -142,18 +152,18 @@
                 const hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(cari));
                 hasil.forEach(h => {
                     area.innerHTML += `
-                    <div class="p-3 card-custom" style="border-top: 3px solid #3b82f6;">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
+                    <div class="card-custom" style="border-top: 3px solid #3b82f6;">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 pr-1">
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
-                                <h2 class="text-white font-black text-[12px]">Rp${Number(h.nominal).toLocaleString('id-ID')}</h2>
+                                <h2 class="text-white font-black text-[13px]">Rp${Number(h.nominal).toLocaleString('id-ID')}</h2>
                             </div>
-                            <div class="text-right ml-1">
+                            <div class="w-10">
                                 <p class="tgl-label">AKT</p>
                                 <h1 class="tgl-angka">${h.aktivasi || '00'}</h1>
                             </div>
                         </div>
-                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-2 bg-blue-600 rounded-lg font-black text-[8px] uppercase">GENERATE 1</button>
+                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-2 bg-blue-600 rounded-xl font-black text-[8px] uppercase mt-4">GENERATE 1</button>
                     </div>`;
                 });
             }
