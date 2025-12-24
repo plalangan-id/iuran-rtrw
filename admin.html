@@ -6,12 +6,12 @@
     <title>PLALANGAN.NET ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
+        
         body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
         .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
         
-        /* PEMBAGIAN KIRI-KANAN DALAM KARTU */
         .card-custom { 
             background: #151517; 
             border-radius: 15px; 
@@ -29,10 +29,18 @@
         .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
         .nominal-lunas { color: #10b981; text-shadow: none; }
         
-        /* SISI KANAN */
-        .tgl-label { font-size: 7px; font-weight: 800; color: #6b7280; text-align: center; }
-        .tgl-angka { font-size: 28px; font-weight: 900; line-height: 1; color: #fff; text-align: center; }
-        .bulan-label { font-size: 7px; font-weight: 800; color: #4b5563; text-transform: uppercase; text-align: center; margin-top: 2px; }
+        /* SISI KANAN - DIBUAT LEBIH RAMPING */
+        .tgl-label { font-size: 7px; font-weight: 600; color: #6b7280; text-align: center; letter-spacing: 1px; }
+        .tgl-angka { 
+            font-family: 'Inter', sans-serif; /* Ganti ke Inter agar lebih modern & ramping */
+            font-size: 32px; 
+            font-weight: 300; /* Angka dibuat tipis/ramping */
+            line-height: 1; 
+            color: #fff; 
+            text-align: center; 
+            margin: 2px 0;
+        }
+        .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; margin-top: 2px; }
         
         /* BUTTON */
         .btn-bayar { background: #ff0000; border-radius: 10px; font-weight: 900; font-size: 9px; padding: 7px 0; margin-top: 8px; }
@@ -49,20 +57,20 @@
             <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-            <div class="p-3 card rounded-2xl border-b-2 border-red-600 text-center">
+        <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="p-3 card rounded-2xl border-b-2 border-red-600">
                 <p class="text-[8px] text-gray-400 font-bold uppercase">BELUM</p>
                 <h3 id="stat-belum" class="text-lg font-black text-red-500">0</h3>
             </div>
-            <div class="p-3 card rounded-2xl border-b-2 border-green-600 text-center">
+            <div class="p-3 card rounded-2xl border-b-2 border-green-600">
                 <p class="text-[8px] text-gray-400 font-bold uppercase">MASUK</p>
                 <h3 id="stat-uang" class="text-lg font-black text-green-500 truncate text-xs">Rp 0</h3>
             </div>
         </div>
 
         <div class="flex card rounded-2xl overflow-hidden p-1">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2.5 text-[10px] font-black tab-active rounded-xl transition-all uppercase">Tagihan</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2.5 text-[10px] font-black text-gray-500 rounded-xl transition-all uppercase">Pelanggan</button>
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2.5 text-[10px] font-black tab-active rounded-xl uppercase">Tagihan</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2.5 text-[10px] font-black text-gray-500 rounded-xl uppercase">Pelanggan</button>
         </div>
 
         <div class="card p-4 rounded-[2rem] min-h-[450px]">
@@ -99,7 +107,7 @@
 
         async function load() {
             const area = document.getElementById('area-data');
-            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-30 uppercase'>Sinkronisasi...</p>";
+            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-30'>SINKRONISASI...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
@@ -137,7 +145,7 @@
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
                                 <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</h2>
                             </div>
-                            <div class="w-12 flex flex-col justify-center">
+                            <div class="w-12 flex flex-col justify-center items-center">
                                 <p class="tgl-label">TGL</p>
                                 <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
                                 <p class="bulan-label truncate">${h.bulan}</p>
@@ -159,7 +167,7 @@
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
                                 <h2 class="text-white font-black text-[12px]">Rp${Number(h.nominal).toLocaleString('id-ID')}</h2>
                             </div>
-                            <div class="w-12 flex flex-col justify-center">
+                            <div class="w-12 flex flex-col justify-center items-center">
                                 <p class="tgl-label">AKT</p>
                                 <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
                             </div>
