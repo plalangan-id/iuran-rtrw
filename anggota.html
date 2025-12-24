@@ -12,55 +12,57 @@
         .premium-card { background: rgba(17, 17, 20, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .gold-button { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: bold; }
         
-        /* KARTU DISAMAKAN DENGAN STYLE ADMIN */
+        /* STRUKTUR KARTU GRID 2 (PERSIS ADMIN) */
         .card-custom { 
             background: #151517; 
             border-radius: 15px; 
-            border-left: 5px solid #ff0000; /* Garis samping seperti di admin */
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transition: transform 0.2s;
-        }
-        .card-lunas { border-left: 5px solid #10b981 !important; }
-        
-        /* DETAIL TEKS */
-        .nama-txt { font-size: 10px; font-weight: 900; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; }
-        .nominal-txt { font-size: 16px; font-weight: 900; color: #fff; }
-        .status-badge { font-size: 8px; font-weight: 900; padding: 2px 8px; rounded: 4px; display: inline-block; margin-top: 5px; }
-        
-        /* SISI TANGGAL (LINGKARAN) */
-        .tgl-circle {
-            width: 50px;
-            height: 50px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
+            border-top: 4px solid #ff0000; 
+            padding: 10px;
+            min-height: 110px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
+        .card-lunas { border-top: 4px solid #10b981 !important; }
+        
+        /* SISI KIRI (NAMA & NOMINAL) */
+        .nama-txt { font-size: 9px; font-weight: 900; color: #9ca3af; text-transform: uppercase; line-height: 1.1; margin-bottom: 2px; }
+        .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
+        .nominal-lunas { color: #10b981; text-shadow: none; }
+        
+        /* SISI KANAN (TGL RAMPING) */
+        .tgl-label { font-size: 7px; font-weight: 600; color: #6b7280; text-align: center; }
+        .tgl-angka { 
+            font-family: 'Inter', sans-serif; 
+            font-size: 28px; 
+            font-weight: 300; 
+            line-height: 1; 
+            color: #fff; 
+            text-align: center; 
+        }
+        .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; }
+
+        .status-kecil { font-size: 6px; font-weight: 900; margin-top: 4px; uppercase; }
     </style>
 </head>
 <body class="p-6">
     <div class="max-w-md mx-auto space-y-8 pt-6">
         <div class="text-center">
             <h1 class="text-3xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold">Billing System v2.0</p>
+            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic">Member 2026</p>
         </div>
 
         <div class="premium-card p-6 rounded-[30px] shadow-2xl text-center">
-            <h2 class="text-[10px] font-bold text-[#d4af37] uppercase mb-3 tracking-widest">Cek Tagihan Anda</h2>
-            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-2 text-lg font-bold text-center outline-none focus:border-[#d4af37] mb-5 uppercase text-white" placeholder="MASUKKAN NAMA">
-            <button onclick="cek()" id="btn-cek" class="gold-button w-full py-3 rounded-xl uppercase text-xs tracking-widest active:scale-95 transition-all">Cek Data</button>
+            <h2 class="text-[10px] font-bold text-[#d4af37] uppercase mb-3 tracking-widest">Cek Tagihan WIFI</h2>
+            <input type="text" id="nama-user" class="w-full bg-transparent border-b border-white/10 p-2 text-lg font-bold text-center outline-none focus:border-[#d4af37] mb-5 uppercase text-white" placeholder="KETIK NAMA ANDA">
+            <button onclick="cek()" id="btn-cek" class="gold-button w-full py-3 rounded-xl uppercase text-xs tracking-widest active:scale-95 transition-all">Periksa Sekarang</button>
         </div>
 
-        <div id="hasil" class="space-y-3 hidden">
+        <div id="hasil" class="grid grid-cols-2 gap-2 hidden">
             </div>
 
-        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4 text-center italic">Professional Internet Service Provider</p>
+        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4 text-center">PLALANGAN.NET &copy; 2026</p>
     </div>
 
     <script>
@@ -71,9 +73,9 @@
             const btn = document.getElementById('btn-cek');
             const resBox = document.getElementById('hasil');
             
-            if(!cariNama) return alert("Silakan ketik nama pelanggan!");
+            if(!cariNama) return alert("Masukkan nama!");
             
-            btn.innerText = "MENGAMBIL DATA...";
+            btn.innerText = "MENCARI...";
             btn.disabled = true;
             resBox.innerHTML = "";
             resBox.classList.add('hidden');
@@ -90,39 +92,39 @@
 
                 if(userTagihan.length == 0) {
                     resBox.classList.remove('hidden');
-                    resBox.innerHTML = "<div class='premium-card p-6 rounded-2xl text-red-500 text-[10px] font-bold uppercase text-center'>Data Tidak Ditemukan</div>";
+                    resBox.innerHTML = "<div class='col-span-2 premium-card p-6 rounded-2xl text-red-500 text-[10px] font-bold uppercase text-center'>Data tidak ditemukan</div>";
                 } else {
                     resBox.classList.remove('hidden');
                     userTagihan.forEach(t => {
-                        // Mapping variabel agar fleksibel (Besar/Kecil)
-                        const nama = t.nama || t.NAMA || "PELANGGAN";
+                        const nama = t.nama || t.NAMA || "NONAME";
                         const jumlah = t.jumlah || t.nominal || t.NOMINAL || 0;
                         const bulan = t.bulan || t.BULAN || "-";
-                        const aktivasi = t.aktivasi || t.AKTIVASI || "00";
+                        const aktivasi = t.aktivasi || t.AKTIVASI || "0";
                         const lunas = String(t.lunas || t.LUNAS).toLowerCase() === "true";
                         
-                        // Template Kartu yang disamakan dengan Admin
                         resBox.innerHTML += `
                             <div class="card-custom ${lunas ? 'card-lunas' : ''}">
-                                <div class="flex-1">
-                                    <p class="nama-txt">${nama}</p>
-                                    <h2 class="nominal-txt">Rp ${Number(jumlah).toLocaleString('id-ID')}</h2>
-                                    <span class="status-badge ${lunas ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}">
-                                        ${lunas ? 'SUDAH DIBAYAR' : 'MENUNGGU PEMBAYARAN'}
-                                    </span>
-                                </div>
-                                <div class="tgl-circle">
-                                    <p class="text-[7px] text-gray-500 font-bold uppercase">Tgl</p>
-                                    <h1 class="text-xl font-bold leading-none">${aktivasi}</h1>
-                                    <p class="text-[7px] text-[#d4af37] font-bold uppercase mt-1">${bulan}</p>
+                                <div class="flex gap-1 items-center h-full">
+                                    <div class="flex-1 border-r border-white/5 pr-1 flex flex-col justify-center">
+                                        <h4 class="nama-txt truncate">${nama}</h4>
+                                        <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(jumlah).toLocaleString('id-ID')}</h2>
+                                        <p class="status-kecil ${lunas ? 'text-green-500' : 'text-red-500'}">
+                                            ${lunas ? 'LUNAS' : 'BELUM BAYAR'}
+                                        </p>
+                                    </div>
+                                    <div class="w-12 flex flex-col justify-center items-center">
+                                        <p class="tgl-label">TGL</p>
+                                        <h1 class="tgl-angka">${aktivasi}</h1>
+                                        <p class="bulan-label truncate w-full text-center">${bulan}</p>
+                                    </div>
                                 </div>
                             </div>`;
                     });
                 }
             } catch(e) { 
-                alert("Koneksi gagal. Coba lagi."); 
+                alert("Gagal mengambil data."); 
             } finally {
-                btn.innerText = "CEK DATA";
+                btn.innerText = "PERIKSA SEKARANG";
                 btn.disabled = false;
             }
         }
