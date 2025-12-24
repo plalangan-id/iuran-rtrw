@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
         
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); min-height: 100vh; }
         .premium-card { background: rgba(17, 17, 20, 0.8); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .gold-button { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 900; }
         
@@ -22,6 +22,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
         .card-lunas { border-top: 4px solid #10b981 !important; }
         
@@ -46,7 +47,7 @@
     <div class="max-w-md mx-auto space-y-8 pt-6">
         <div class="text-center">
             <h1 class="text-3xl font-black text-[#d4af37]">PLALANGAN<span class="text-white">.NET</span></h1>
-            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic">Member Portal</p>
+            <p class="text-gray-500 text-[9px] tracking-[0.3em] uppercase mt-1 font-bold italic text-center">Member Portal</p>
         </div>
 
         <div class="premium-card p-6 rounded-[30px] shadow-2xl text-center">
@@ -56,7 +57,7 @@
         </div>
 
         <div id="hasil" class="grid grid-cols-2 gap-2 hidden"></div>
-        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4 text-center">PLALANGAN.NET &copy; 2025</p>
+        <p class="text-[9px] text-gray-700 font-bold tracking-[0.3em] uppercase pt-4 text-center">PLALANGAN.NET &copy; 2026</p>
     </div>
 
     <script>
@@ -77,6 +78,8 @@
             try {
                 const response = await fetch(`${API_URL}?action=read`);
                 const data = await response.json();
+                
+                // Mengambil data dari sheet 'tagihan' (biasanya ada di data.tagihan)
                 const list = data.tagihan || data;
                 
                 const userTagihan = list.filter(d => (d.nama || "").toString().toUpperCase().includes(cariNama));
@@ -87,15 +90,15 @@
                 } else {
                     resBox.classList.remove('hidden');
                     userTagihan.forEach(t => {
-                        // KUNCI VARIABEL AGAR TIDAK TERTUKAR TAHUN
+                        // SESUAIKAN DENGAN NAMA KOLOM DI SHEET MAS
                         const vNama = t.nama || "NONAME";
                         const vBulan = t.bulan || "-";
                         const vTgl = t.aktivasi || "0";
                         const vLunas = String(t.lunas).toLowerCase() === "true";
                         
-                        // AMBIL NOMINAL (Cek properti 'jumlah' atau 'nominal')
-                        let vRp = t.jumlah || t.nominal || 0;
-                        
+                        // FIX: Ambil dari kolom 'jumblah' (dengan huruf h)
+                        const vRp = t.jumblah || t.jumlah || 0;
+
                         resBox.innerHTML += `
                             <div class="card-custom ${vLunas ? 'card-lunas' : ''}">
                                 <div class="flex gap-1 items-center h-full">
