@@ -15,6 +15,11 @@
         .filter-btn { font-size: 7px; text-transform: uppercase; padding: 6px 2px; border-radius: 6px; background: rgba(255,255,255,0.05); flex: 1; transition: 0.3s; }
         .filter-active { background: #d4af37; color: black; font-weight: 900; }
         .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        /* WARNA MERAH MENYALA UNTUK BELUM BAYAR */
+        .border-belum-bayar { border-top: 3px solid #ff0000 !important; box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.2); }
+        .text-nominal-belum { color: #ff3131; text-shadow: 0 0 5px rgba(255, 49, 49, 0.5); }
+        .btn-bayar-menyala { background: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.4); }
     </style>
 </head>
 <body class="p-4">
@@ -25,13 +30,13 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2 text-center">
-            <div class="p-2 card rounded-xl border-b-2 border-red-500/50">
+            <div class="p-2 card rounded-xl border-b-2 border-red-500">
                 <p class="text-[7px] text-gray-400 font-bold uppercase">BELUM BAYAR</p>
-                <h3 id="stat-belum" class="text-sm font-black text-red-500">0</h3>
+                <h3 id="stat-belum" class="text-sm font-black text-red-500 uppercase tracking-tighter">0</h3>
             </div>
-            <div class="p-2 card rounded-xl border-b-2 border-green-500/50">
+            <div class="p-2 card rounded-xl border-b-2 border-green-500">
                 <p class="text-[7px] text-gray-400 font-bold uppercase">TOTAL MASUK</p>
-                <h3 id="stat-uang" class="text-sm font-black text-green-500">Rp 0</h3>
+                <h3 id="stat-uang" class="text-sm font-black text-green-500 tracking-tighter">Rp 0</h3>
             </div>
         </div>
 
@@ -119,11 +124,13 @@
                 hasil.forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
                     area.innerHTML += `
-                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 ${lunas?'border-green-500/50':'border-red-500/50'}">
+                    <div class="p-2 card rounded-lg flex flex-col justify-between ${lunas ? 'border-t-2 border-green-500/50' : 'border-belum-bayar'}">
                         <div class="mb-1 text-[7px] text-gray-400 font-bold uppercase truncate-text">${h.nama}</div>
-                        <div class="text-[9px] font-black">Rp${Number(h.jumlah).toLocaleString('id-ID')}</div>
+                        <div class="text-[9px] font-black ${lunas ? 'text-white' : 'text-nominal-belum'}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</div>
                         <div class="text-[5px] text-gray-500 mb-1 uppercase font-bold">${h.bulan} ${h.tahun}</div>
-                        <button ${lunas?'':`onclick="bayar('${h.id}')"`} class="w-full py-1 rounded text-[7px] font-black ${lunas?'bg-green-900/30 text-green-500':'bg-green-600 text-white active:scale-90'} transition-all">${lunas?'LUNAS':'BAYAR'}</button>
+                        <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full py-1 rounded text-[7px] font-black transition-all ${lunas ? 'bg-green-900/30 text-green-500 cursor-default' : 'btn-bayar-menyala text-white active:scale-90'}">
+                            ${lunas ? 'LUNAS' : 'BAYAR'}
+                        </button>
                     </div>`;
                 });
             } else {
