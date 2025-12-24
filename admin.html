@@ -7,104 +7,104 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); }
-        .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
-        .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
+        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         .input-dark { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; font-size: 11px; outline: none; color: white; }
-        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; background: rgba(212, 175, 55, 0.05); }
-        .filter-btn { font-size: 7px; text-transform: uppercase; padding: 6px 2px; border-radius: 6px; background: rgba(255,255,255,0.05); flex: 1; transition: 0.3s; }
-        .filter-active { background: #d4af37; color: black; font-weight: 900; }
-        .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
         
-        /* WARNA MERAH MENYALA UNTUK BELUM BAYAR */
-        .border-belum-bayar { border-top: 3px solid #ff0000 !important; box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.2); }
-        .text-nominal-belum { color: #ff3131; text-shadow: 0 0 5px rgba(255, 49, 49, 0.5); }
-        .btn-bayar-menyala { background: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.4); }
+        /* STYLE KARTU PERSIS GAMBAR */
+        .card-custom { background: #151517; border-radius: 20px; border-top: 4px solid #ff0000; position: relative; overflow: hidden; }
+        .card-lunas { border-top: 4px solid #10b981 !important; }
+        
+        .tgl-label { font-size: 10px; font-weight: 800; color: #fff; opacity: 0.9; text-align: center; }
+        .tgl-angka { font-size: 38px; font-weight: 900; line-height: 1; color: #fff; text-align: center; }
+        
+        .nama-pelanggan { font-size: 14px; font-weight: 900; color: #9ca3af; text-transform: uppercase; }
+        .nominal-glow { font-size: 18px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
+        .nominal-lunas { color: #10b981; text-shadow: none; }
+        .bulan-tahun { font-size: 9px; font-weight: 800; color: #4b5563; text-transform: uppercase; }
+        
+        .btn-bayar { background: #ff0000; border-radius: 12px; font-weight: 900; font-size: 12px; letter-spacing: 1px; transition: 0.2s; }
+        .btn-bayar:active { transform: scale(0.95); opacity: 0.8; }
+        .btn-lunas { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; }
+
+        .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
+        .filter-btn { font-size: 7px; padding: 6px 2px; border-radius: 6px; background: rgba(255,255,255,0.05); flex: 1; }
+        .filter-active { background: #d4af37; color: black; font-weight: 900; }
     </style>
 </head>
 <body class="p-4">
-    <div class="max-w-md mx-auto space-y-3">
+    <div class="max-w-md mx-auto space-y-4">
         
-        <div class="text-center pb-2">
+        <div class="text-center">
             <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-center">
-            <div class="p-2 card rounded-xl border-b-2 border-red-500">
-                <p class="text-[7px] text-gray-400 font-bold uppercase">BELUM BAYAR</p>
-                <h3 id="stat-belum" class="text-sm font-black text-red-500 uppercase tracking-tighter">0</h3>
+        <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 card rounded-2xl border-b-4 border-red-600 text-center">
+                <p class="text-[8px] text-gray-400 font-bold uppercase">BELUM BAYAR</p>
+                <h3 id="stat-belum" class="text-lg font-black text-red-500">0</h3>
             </div>
-            <div class="p-2 card rounded-xl border-b-2 border-green-500">
-                <p class="text-[7px] text-gray-400 font-bold uppercase">TOTAL MASUK</p>
-                <h3 id="stat-uang" class="text-sm font-black text-green-500 tracking-tighter">Rp 0</h3>
-            </div>
-        </div>
-
-        <div class="card p-3 rounded-xl">
-            <div class="flex gap-1">
-                <input type="text" id="new-nama" placeholder="nama" class="input-dark flex-1 uppercase">
-                <input type="number" id="new-akt" placeholder="tgl" class="input-dark w-12 text-center">
-                <input type="number" id="new-nom" placeholder="rp" class="input-dark w-20">
-                <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold uppercase active:scale-95 transition-all">SIMPAN</button>
+            <div class="p-3 card rounded-2xl border-b-4 border-green-600 text-center">
+                <p class="text-[8px] text-gray-400 font-bold uppercase">TOTAL MASUK</p>
+                <h3 id="stat-uang" class="text-lg font-black text-green-500">Rp 0</h3>
             </div>
         </div>
 
         <div class="flex card rounded-xl overflow-hidden">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-3 text-[10px] font-black tab-active transition-all">TAGIHAN BAYAR</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-3 text-[10px] font-black text-gray-500 transition-all">DATA PELANGGAN</button>
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-3 text-[10px] font-black tab-active">TAGIHAN BAYAR</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-3 text-[10px] font-black text-gray-500">DATA PELANGGAN</button>
         </div>
 
-        <div class="card p-4 rounded-2xl min-h-[350px]">
-            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-2 mb-3 uppercase">
+        <div class="card p-4 rounded-3xl min-h-[400px]">
+            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-2 mb-4 uppercase">
             
-            <div id="filter-container" class="flex gap-1 mb-4">
-                <button onclick="setFilter('semua', this)" class="filter-btn filter-active">SEMUA</button>
-                <button onclick="setFilter('belum', this)" class="filter-btn">BELUM BAYAR</button>
-                <button onclick="setFilter('lunas', this)" class="filter-btn">LUNAS</button>
+            <div id="filter-container" class="flex gap-1 mb-5">
+                <button onclick="setFilter('semua', this)" class="filter-btn filter-active uppercase">Semua</button>
+                <button onclick="setFilter('belum', this)" class="filter-btn uppercase">Belum</button>
+                <button onclick="setFilter('lunas', this)" class="filter-btn uppercase">Lunas</button>
             </div>
 
-            <div id="area-data" class="grid grid-cols-3 gap-2 max-h-[350px] overflow-y-auto pr-1">
+            <div id="area-data" class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
                 </div>
         </div>
 
-        <div class="card p-3 rounded-xl flex gap-1 items-center">
-            <select id="bln-gen" class="bg-black/50 text-[10px] p-2 rounded flex-1 outline-none border border-white/5">
+        <div class="card p-3 rounded-2xl flex gap-2 items-center">
+            <select id="bln-gen" class="bg-black text-[10px] p-2 rounded flex-1 border border-white/10 outline-none">
                 <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
                 <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
                 <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                 <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
             </select>
-            <input type="number" id="thn-gen" value="2025" class="bg-black/50 text-[10px] p-2 rounded w-16 text-center outline-none border border-white/5">
-            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-3 py-2 rounded-lg text-[8px] active:scale-95 transition-all">GENERATE MASSAL</button>
+            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-2 rounded w-16 border border-white/10 outline-none">
+            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2 rounded-xl text-[8px]">GENERATE MASSAL</button>
         </div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
-        
         let dataTagihan = [];
         let dataMaster = [];
         let currentTab = 'tagihan';
         let filterStatus = 'semua';
 
         async function load() {
-            const area = document.getElementById('area-data');
-            area.innerHTML = "<p class='col-span-3 text-center py-20 text-[8px] opacity-50 uppercase'>Loading...</p>";
+            document.getElementById('area-data').innerHTML = "<p class='text-center py-20 text-[10px] animate-pulse'>SINKRONISASI...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
                 dataTagihan = json.tagihan || [];
                 dataMaster = json.master || [];
-
-                const belum = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
-                const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s, i) => s + Number(i.jumlah), 0);
-                
-                document.getElementById('stat-belum').innerText = belum;
-                document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
+                updateStats();
                 render();
-            } catch(e) {
-                area.innerHTML = "<p class='col-span-3 text-center py-20 text-[8px] text-red-500 uppercase'>Gagal Koneksi</p>";
-            }
+            } catch(e) { alert("Koneksi Gagal!"); }
+        }
+
+        function updateStats() {
+            const belum = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
+            const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s, i) => s + Number(i.jumlah), 0);
+            document.getElementById('stat-belum').innerText = belum;
+            document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
         }
 
         function render() {
@@ -113,36 +113,48 @@
             area.innerHTML = "";
 
             if (currentTab === 'tagihan') {
-                document.getElementById('filter-container').style.display = 'flex';
+                document.getElementById('filter-container').classList.remove('hidden');
                 let hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
-
                 if (filterStatus === 'belum') hasil = hasil.filter(d => String(d.lunas).toLowerCase() === "false");
                 if (filterStatus === 'lunas') hasil = hasil.filter(d => String(d.lunas).toLowerCase() === "true");
 
-                if(hasil.length === 0) area.innerHTML = "<p class='col-span-3 text-center py-10 text-[8px] opacity-20 uppercase'>Kosong</p>";
-                
                 hasil.forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
                     area.innerHTML += `
-                    <div class="p-2 card rounded-lg flex flex-col justify-between ${lunas ? 'border-t-2 border-green-500/50' : 'border-belum-bayar'}">
-                        <div class="mb-1 text-[7px] text-gray-400 font-bold uppercase truncate-text">${h.nama}</div>
-                        <div class="text-[9px] font-black ${lunas ? 'text-white' : 'text-nominal-belum'}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</div>
-                        <div class="text-[5px] text-gray-500 mb-1 uppercase font-bold">${h.bulan} ${h.tahun}</div>
-                        <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full py-1 rounded text-[7px] font-black transition-all ${lunas ? 'bg-green-900/30 text-green-500 cursor-default' : 'btn-bayar-menyala text-white active:scale-90'}">
+                    <div class="p-5 card-custom ${lunas ? 'card-lunas' : ''}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="nama-pelanggan">${h.nama}</h4>
+                                <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</h2>
+                                <p class="bulan-tahun">${h.bulan} ${h.tahun}</p>
+                            </div>
+                            <div>
+                                <p class="tgl-label">TGL</p>
+                                <h1 class="tgl-angka">${h.aktivasi || '00'}</h1>
+                            </div>
+                        </div>
+                        <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full py-3 btn-bayar ${lunas ? 'btn-lunas' : 'text-white'} uppercase">
                             ${lunas ? 'LUNAS' : 'BAYAR'}
                         </button>
                     </div>`;
                 });
             } else {
-                document.getElementById('filter-container').style.display = 'none';
+                document.getElementById('filter-container').classList.add('hidden');
                 const hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(cari));
                 hasil.forEach(h => {
                     area.innerHTML += `
-                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 border-blue-500/50">
-                        <div class="mb-1 text-[7px] text-gray-300 font-bold uppercase truncate-text">${h.nama}</div>
-                        <div class="text-[8px] font-bold">Akt: ${h.aktivasi || '-'}</div>
-                        <div class="text-[8px] font-black mb-1">Rp${Number(h.nominal).toLocaleString('id-ID')}</div>
-                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-1.5 rounded bg-blue-600 text-[6px] font-black uppercase text-white active:scale-90 transition-all">GENERATE 1</button>
+                    <div class="p-5 card-custom border-top shadow-lg" style="border-top: 4px solid #3b82f6;">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="nama-pelanggan">${h.nama}</h4>
+                                <h2 class="text-white font-black text-lg">Rp${Number(h.nominal).toLocaleString('id-ID')}</h2>
+                            </div>
+                            <div>
+                                <p class="tgl-label">AKT</p>
+                                <h1 class="tgl-angka">${h.aktivasi || '00'}</h1>
+                            </div>
+                        </div>
+                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-3 bg-blue-600 rounded-xl font-black text-[10px] uppercase">GENERATE 1 NAMA</button>
                     </div>`;
                 });
             }
@@ -162,48 +174,30 @@
             render();
         }
 
+        async function bayar(id) {
+            if(!confirm("Proses Pembayaran?")) return;
+            await fetch(`${API_URL}?action=update&id=${id}`);
+            load();
+        }
+
         async function genSingle(n, a, m) {
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Buat tagihan ${n} untuk ${b} ${t}?`)) return;
-            try {
-                const res = await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
-                const text = await res.text();
-                if (text === "Double") alert("TAGIHAN SUDAH ADA!");
-                else { alert("BERHASIL"); switchTab('tagihan'); load(); }
-            } catch(e) { alert("ERROR"); }
+            if(!confirm(`Buat tagihan ${n} - ${b}?`)) return;
+            const res = await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
+            const text = await res.text();
+            if(text === "Double") alert("Data Sudah Ada!");
+            else { alert("Berhasil!"); switchTab('tagihan'); load(); }
         }
 
         async function prosesGenerate() {
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Generate massal untuk bulan ${b} ${t}?`)) return;
+            if(!confirm(`Generate massal ${b}? Nama yang sudah ada akan dilewati.`)) return;
             document.getElementById('btn-massal').innerText = "...";
-            try {
-                const res = await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`);
-                const msg = await res.text();
-                alert(msg);
-                location.reload();
-            } catch(e) { alert("Gagal"); document.getElementById('btn-massal').innerText = "GENERATE MASSAL"; }
-        }
-
-        async function tambahWarga() {
-            const n = document.getElementById('new-nama').value;
-            const a = document.getElementById('new-akt').value;
-            const m = document.getElementById('new-nom').value;
-            if(!n || !m) return alert("ISI NAMA & NOMINAL");
-            document.getElementById('btn-tambah').innerText = "...";
-            try {
-                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}`);
-                alert("TERSIMPAN");
-                location.reload();
-            } catch(e) { alert("Gagal"); }
-        }
-
-        async function bayar(id) {
-            if(!confirm("LUNASKAN?")) return;
-            await fetch(`${API_URL}?action=update&id=${id}`);
-            load();
+            const res = await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`);
+            alert(await res.text());
+            location.reload();
         }
 
         window.onload = load;
