@@ -7,11 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; background-image: radial-gradient(circle at top, #1a1a1f 0%, #0a0a0c 100%); }
         .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
         .input-dark { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; font-size: 11px; outline: none; color: white; }
-        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
+        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; background: rgba(212, 175, 55, 0.05); }
+        .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body class="p-4">
@@ -19,62 +20,79 @@
         
         <div class="text-center pb-2">
             <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
+            <p class="text-[7px] text-gray-500 uppercase tracking-widest">Sistem Manajemen Iuran</p>
         </div>
 
         <div class="grid grid-cols-2 gap-2 text-center">
-            <div class="p-2 card rounded-xl border-b-2 border-red-500"><p class="text-[7px] text-gray-400">BELUM BAYAR</p><h3 id="stat-belum" class="text-sm font-black text-red-500">0</h3></div>
-            <div class="p-2 card rounded-xl border-b-2 border-green-500"><p class="text-[7px] text-gray-400">TOTAL MASUK</p><h3 id="stat-uang" class="text-sm font-black text-green-500">Rp 0</h3></div>
+            <div class="p-2 card rounded-xl border-b-2 border-red-500/50">
+                <p class="text-[7px] text-gray-400 font-bold uppercase">BELUM BAYAR</p>
+                <h3 id="stat-belum" class="text-sm font-black text-red-500">0</h3>
+            </div>
+            <div class="p-2 card rounded-xl border-b-2 border-green-500/50">
+                <p class="text-[7px] text-gray-400 font-bold uppercase">TOTAL MASUK</p>
+                <h3 id="stat-uang" class="text-sm font-black text-green-500">Rp 0</h3>
+            </div>
         </div>
 
-        <div class="card p-3 rounded-xl">
+        <div class="card p-3 rounded-xl border-l-4 border-blue-500">
+            <p class="text-[8px] font-bold text-blue-400 uppercase mb-2 italic">Tambah Pelanggan Baru (Master)</p>
             <div class="flex gap-1">
-                <input type="text" id="new-nama" placeholder="nama" class="input-dark flex-1">
-                <input type="number" id="new-akt" placeholder="tgl" class="input-dark w-12">
-                <input type="number" id="new-nom" placeholder="rp" class="input-dark w-16">
-                <button onclick="tambahWarga()" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold">SIMPAN</button>
+                <input type="text" id="new-nama" placeholder="nama" class="input-dark flex-1 uppercase">
+                <input type="number" id="new-akt" placeholder="tgl" class="input-dark w-12 text-center">
+                <input type="number" id="new-nom" placeholder="rp" class="input-dark w-20">
+                <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold uppercase active:scale-95 transition-all">SIMPAN</button>
             </div>
         </div>
 
         <div class="flex card rounded-xl overflow-hidden">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-3 text-[10px] font-bold tab-active">BAYAR IURAN</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-3 text-[10px] font-bold text-gray-500">DATA PELANGGAN</button>
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-3 text-[10px] font-black tab-active transition-all">TAGIHAN BAYAR</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-3 text-[10px] font-black text-gray-500 transition-all">DATA PELANGGAN</button>
         </div>
 
-        <div class="card p-4 rounded-2xl min-h-[300px]">
-            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-2 mb-4 uppercase">
+        <div class="card p-4 rounded-2xl min-h-[350px]">
+            <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-2 mb-4 uppercase placeholder:text-white/10">
             
-            <div id="area-data" class="grid grid-cols-3 gap-2 max-h-[350px] overflow-y-auto"></div>
+            <div id="area-data" class="grid grid-cols-3 gap-2 max-h-[380px] overflow-y-auto pr-1">
+                </div>
         </div>
 
-        <div class="card p-3 rounded-xl flex gap-2">
-            <select id="bln-gen" class="bg-black/50 text-[10px] p-2 rounded flex-1">
+        <div class="card p-3 rounded-xl flex gap-2 items-center">
+            <select id="bln-gen" class="bg-black/50 text-[10px] p-2 rounded flex-1 outline-none border border-white/10">
                 <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
                 <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
                 <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                 <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
             </select>
-            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2 rounded-lg text-[8px]">GENERATE MASSAL</button>
+            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2 rounded-lg text-[8px] active:scale-95 transition-all">GENERATE MASSAL</button>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyHWYlQ7LvRJ5fqxOua91iLtb5aQR_Pj5JKmJSx43WPteLCUZKgYEGlM-Zvx-OJfuRkHw/exec";
+        // LINK API TERBARU KAMU
+        const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
+        
         let dataTagihan = [];
         let dataMaster = [];
         let currentTab = 'tagihan';
 
         async function load() {
-            document.getElementById('area-data').innerHTML = "<p class='col-span-3 text-center py-10 text-[8px] opacity-50'>LOADING...</p>";
-            const res = await fetch(`${API_URL}?action=read`);
-            const json = await res.json();
-            dataTagihan = json.tagihan;
-            dataMaster = json.master;
+            const area = document.getElementById('area-data');
+            area.innerHTML = "<p class='col-span-3 text-center py-20 text-[8px] opacity-50 animate-pulse uppercase'>Sinkronisasi Data...</p>";
+            try {
+                const res = await fetch(`${API_URL}?action=read`);
+                const json = await res.json();
+                dataTagihan = json.tagihan || [];
+                dataMaster = json.master || [];
 
-            const belum = dataTagihan.filter(d => String(d.lunas) == "false").length;
-            const uang = dataTagihan.filter(d => String(d.lunas) == "true").reduce((s, i) => s + Number(i.jumlah), 0);
-            document.getElementById('stat-belum').innerText = belum;
-            document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
-            render();
+                const belum = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
+                const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s, i) => s + Number(i.jumlah), 0);
+                
+                document.getElementById('stat-belum').innerText = belum;
+                document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
+                render();
+            } catch(e) {
+                area.innerHTML = "<p class='col-span-3 text-center py-20 text-[8px] text-red-500 uppercase font-bold'>Gagal Koneksi API</p>";
+            }
         }
 
         function render() {
@@ -84,25 +102,31 @@
 
             if (currentTab === 'tagihan') {
                 const hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
+                if(hasil.length === 0) area.innerHTML = "<p class='col-span-3 text-center py-10 text-[8px] opacity-20 uppercase'>Kosong</p>";
+                
                 hasil.forEach(h => {
-                    const lunas = String(h.lunas) == "true";
+                    const lunas = String(h.lunas).toLowerCase() == "true";
                     area.innerHTML += `
-                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 ${lunas?'border-green-500':'border-red-500'}">
-                        <div class="mb-1 text-[7px] text-gray-400 font-bold uppercase truncate">${h.nama}</div>
+                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 ${lunas?'border-green-500/50':'border-red-500/50'}">
+                        <div class="mb-1 text-[7px] text-gray-400 font-bold uppercase truncate-text">${h.nama}</div>
                         <div class="text-[9px] font-black">Rp${Number(h.jumlah).toLocaleString('id-ID')}</div>
-                        <div class="text-[5px] text-gray-500 mb-1 uppercase">${h.bulan}</div>
-                        <button ${lunas?'':`onclick="bayar('${h.id}')"`} class="w-full py-1 rounded text-[7px] font-bold ${lunas?'bg-green-900/30 text-green-500':'bg-green-600'}">${lunas?'LUNAS':'BAYAR'}</button>
+                        <div class="text-[5px] text-gray-500 mb-1 uppercase font-bold">${h.bulan} ${h.tahun}</div>
+                        <button ${lunas?'':`onclick="bayar('${h.id}')"`} class="w-full py-1 rounded text-[7px] font-black ${lunas?'bg-green-900/30 text-green-500 cursor-default':'bg-green-600 text-white active:scale-90'} transition-all">
+                            ${lunas?'LUNAS':'BAYAR'}
+                        </button>
                     </div>`;
                 });
             } else {
                 const hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(cari));
+                if(hasil.length === 0) area.innerHTML = "<p class='col-span-3 text-center py-10 text-[8px] opacity-20 uppercase'>Data Kosong</p>";
+                
                 hasil.forEach(h => {
                     area.innerHTML += `
-                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 border-blue-500">
-                        <div class="mb-1 text-[7px] text-gray-400 font-bold uppercase truncate">${h.nama}</div>
-                        <div class="text-[8px] font-bold">Akt: Tgl ${h.aktivasi}</div>
-                        <div class="text-[8px] font-bold mb-1">Rp${Number(h.nominal).toLocaleString('id-ID')}</div>
-                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-1 rounded bg-blue-600 text-[6px] font-bold uppercase text-white">GENERATE 1 NAMA</button>
+                    <div class="p-2 card rounded-lg flex flex-col justify-between border-t-2 border-blue-500/50">
+                        <div class="mb-1 text-[7px] text-gray-300 font-bold uppercase truncate-text">${h.nama}</div>
+                        <div class="text-[8px] font-bold">Akt: ${h.aktivasi || '-'}</div>
+                        <div class="text-[8px] font-black mb-1">Rp${Number(h.nominal).toLocaleString('id-ID')}</div>
+                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-1.5 rounded bg-blue-600 text-[6px] font-black uppercase text-white active:scale-90 transition-all">GENERATE 1 NAMA</button>
                     </div>`;
                 });
             }
@@ -111,42 +135,65 @@
         function switchTab(t) {
             currentTab = t;
             document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan');
+            document.getElementById('btn-tab-tagihan').classList.toggle('text-gray-500', t!='tagihan');
             document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master');
+            document.getElementById('btn-tab-master').classList.toggle('text-gray-500', t!='master');
             render();
         }
 
         async function genSingle(n, a, m) {
             const b = document.getElementById('bln-gen').value;
             const t = new Date().getFullYear();
-            if(!confirm(`Buat tagihan ${n} untuk ${b}?`)) return;
-            await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
-            alert("Berhasil!");
-            switchTab('tagihan');
-            load();
+            if(!confirm(`Buat tagihan untuk ${n} bulan ${b}?`)) return;
+            
+            try {
+                const res = await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
+                const text = await res.text();
+                if (text === "Double") {
+                    alert("GAGAL: Tagihan " + n + " untuk bulan " + b + " sudah ada!");
+                } else {
+                    alert("BERHASIL: Tagihan dibuat.");
+                    switchTab('tagihan');
+                    load();
+                }
+            } catch(e) { alert("Terjadi Kesalahan"); }
         }
 
         async function prosesGenerate() {
             const b = document.getElementById('bln-gen').value;
-            if(!confirm(`Generate massal untuk bulan ${b}?`)) return;
-            document.getElementById('btn-massal').innerText = "...";
-            await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=2025`);
-            location.reload();
+            if(!confirm(`Generate massal untuk bulan ${b}? Nama yang sudah ada akan dilewati.`)) return;
+            
+            const btn = document.getElementById('btn-massal');
+            btn.innerText = "...";
+            try {
+                const res = await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=2025`);
+                const msg = await res.text();
+                alert(msg);
+                location.reload();
+            } catch(e) { alert("Gagal"); btn.innerText = "GENERATE MASSAL"; }
         }
 
         async function tambahWarga() {
             const n = document.getElementById('new-nama').value;
             const a = document.getElementById('new-akt').value;
             const m = document.getElementById('new-nom').value;
-            if(!n || !m) return alert("Lengkapi data!");
-            await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}`);
-            alert("Tersimpan!");
-            location.reload();
+            if(!n || !m) return alert("Lengkapi Nama dan Nominal!");
+            
+            const btn = document.getElementById('btn-tambah');
+            btn.innerText = "...";
+            try {
+                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}`);
+                alert("Warga tersimpan di Master.");
+                location.reload();
+            } catch(e) { alert("Gagal"); btn.innerText = "SIMPAN"; }
         }
 
         async function bayar(id) {
-            if(!confirm("Bayar?")) return;
-            await fetch(`${API_URL}?action=update&id=${id}`);
-            load();
+            if(!confirm("Konfirmasi Pembayaran Lunas?")) return;
+            try {
+                await fetch(`${API_URL}?action=update&id=${id}`);
+                load();
+            } catch(e) { alert("Gagal Update"); }
         }
 
         window.onload = load;
