@@ -14,6 +14,9 @@
         .input-dark:focus { border-color: #d4af37; }
         .filter-active { background: #d4af37 !important; color: black !important; font-weight: bold; }
         .truncate-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        /* Custom scrollbar */
+        #area-hasil::-webkit-scrollbar { width: 4px; }
+        #area-hasil::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body class="p-4">
@@ -39,11 +42,8 @@
             <p class="text-[8px] font-bold text-blue-400 uppercase mb-2">Tambah Anggota Baru</p>
             <div class="flex gap-1">
                 <input type="text" id="new-nama" placeholder="Nama" class="input-dark flex-1">
-                
                 <input type="number" id="new-aktivasi" placeholder="Tgl" class="input-dark w-14 text-center">
-
                 <input type="number" id="new-nominal" placeholder="Nominal" class="input-dark w-20">
-                
                 <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold hover:bg-blue-500 transition-all">SIMPAN</button>
             </div>
         </div>
@@ -87,11 +87,13 @@
     </div>
 
     <script>
+        // GANTI DENGAN URL WEB APP KAMU
         const API_URL = "https://script.google.com/macros/s/AKfycbwz8DztBtHz4Ktp-ChdjFO4ePvgnoC3PflzMX3x-Tqse9jJj0BMXAwxBU7YM2p4g7IyLw/exec";
         
         let dataMaster = [];
         let filterStatus = 'semua';
 
+        // Ambil Data Awal (Membaca Sheet2)
         async function fetchInitialData() {
             const area = document.getElementById('area-hasil');
             area.innerHTML = "<p class='col-span-3 text-[8px] animate-pulse py-4 text-gray-500'>SINKRONISASI...</p>";
@@ -107,14 +109,15 @@
                 
                 renderData();
             } catch(e) { 
-                area.innerHTML = "<p class='col-span-3 text-[8px] text-red-500'>GAGAL LOAD DATA</p>"; 
+                area.innerHTML = "<p class='col-span-3 text-[8px] text-red-500 uppercase'>Gagal Load Data</p>"; 
             }
         }
 
+        // Tampilkan Data ke Layar
         function renderData() {
             const namaCari = document.getElementById('cari-nama').value.toUpperCase();
             const area = document.getElementById('area-hasil');
-            let hasil = dataMaster.filter(d => d.nama.toString().toUpperCase().includes(namaCari));
+            let hasil = dataMaster.filter(d => d.nama && d.nama.toString().toUpperCase().includes(namaCari));
 
             if (filterStatus === 'belum') hasil = hasil.filter(d => d.lunas === false || d.lunas === "false");
             if (filterStatus === 'lunas') hasil = hasil.filter(d => d.lunas === true || d.lunas === "true");
@@ -126,9 +129,10 @@
                 area.innerHTML += `
                 <div class="p-2 card rounded-xl flex flex-col justify-between border-t-2 ${isLunas ? 'border-green-500/40' : 'border-red-500/30'}">
                     <div class="mb-1 text-left">
-                        <p class="text-[6px] text-gray-500 font-bold uppercase truncate-text">${h.bulan} ${h.tahun}</p>
+                        <p class="text-[6px] text-gray-400 font-bold uppercase truncate-text">Akt: Tgl ${h.aktivasi || '-'}</p>
                         <p class="font-black text-white text-[9px]">Rp${Number(h.jumlah).toLocaleString('id-ID')}</p>
                         <p class="text-[7px] text-gray-300 uppercase truncate-text font-medium">${h.nama}</p>
+                        <p class="text-[5px] text-gray-500 uppercase">${h.bulan} ${h.tahun}</p>
                     </div>
                     <button ${isLunas ? '' : `onclick="bayar('${h.id}')"`} class="${isLunas ? 'bg-green-900/40 text-green-500 cursor-default' : 'bg-green-600 text-white active:scale-95'} w-full py-1 rounded-md text-[7px] font-black uppercase transition-all">
                         ${isLunas ? 'LUNAS' : 'BAYAR'}
@@ -137,6 +141,7 @@
             });
         }
 
+        // Fungsi Simpan Warga Baru (ke Sheet1)
         async function tambahWarga() {
             const nama = document.getElementById('new-nama').value;
             const aktivasi = document.getElementById('new-aktivasi').value; 
@@ -149,40 +154,42 @@
             btn.disabled = true;
             try {
                 await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}&aktivasi=${encodeURIComponent(aktivasi)}`);
-                alert("Warga Berhasil Ditambahkan!");
+                alert("Berhasil Tersimpan di Data Pelanggan (Sheet1)");
                 document.getElementById('new-nama').value = "";
                 document.getElementById('new-aktivasi').value = ""; 
                 document.getElementById('new-nominal').value = "";
                 fetchInitialData();
-            } catch(e) { 
-                fetchInitialData(); 
-            }
+            } catch(e) { alert("Gagal Simpan"); }
             btn.innerText = "SIMPAN";
             btn.disabled = false;
         }
 
+        // Fungsi Generate Tagihan (Sheet1 ke Sheet2)
         async function prosesGenerate() {
             const bln = document.getElementById('bulan-input').value;
             const thn = document.getElementById('tahun-input').value;
-            if(!confirm(`Buat tagihan ${bln} ${thn}?`)) return;
+            if(!confirm(`Generate tagihan untuk semua pelanggan di ${bln} ${thn}?`)) return;
+            
             const btn = document.getElementById('btn-gen');
             btn.innerText = "...";
             try {
                 await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}`);
-                alert("Proses Selesai!");
+                alert("Tagihan Berhasil Dibuat di Sheet2!");
                 fetchInitialData();
-            } catch(e) { fetchInitialData(); }
+            } catch(e) { alert("Gagal Generate"); }
             btn.innerText = "Generate Tagihan";
         }
 
+        // Fungsi Bayar (Update di Sheet2)
         async function bayar(id) {
             if(!confirm("Konfirmasi Pembayaran?")) return;
             try {
                 await fetch(`${API_URL}?action=update&id=${id}`);
                 fetchInitialData();
-            } catch(e) { fetchInitialData(); }
+            } catch(e) { alert("Gagal Update Bayar"); }
         }
 
+        // Filter Tampilan
         function setFilter(status, el) {
             filterStatus = status;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-active'));
