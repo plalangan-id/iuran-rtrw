@@ -38,7 +38,15 @@
         <div class="card p-3 rounded-2xl border-l-4 border-blue-500/50">
             <p class="text-[8px] font-bold text-blue-400 uppercase mb-2">Tambah Anggota Baru</p>
             <div class="flex gap-2">
-                <input type="text" id="new-nama" placeholder="Nama" class="input-dark flex-1"> <input type="number" id="new-nominal" placeholder="Nominal Rp" class="input-dark w-24"> <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold hover:bg-blue-500 transition-all">SIMPAN</button>
+                <input type="text" id="new-nama" placeholder="Nama" class="input-dark flex-1">
+                
+                <select id="new-aktivasi" class="input-dark w-20 text-[9px] appearance-none cursor-pointer">
+                    <option value="Aktif">Aktif</option>
+                    <option value="Non-Aktif">Non-Aktif</option>
+                </select>
+
+                <input type="number" id="new-nominal" placeholder="Nominal Rp" class="input-dark w-24">
+                <button onclick="tambahWarga()" id="btn-tambah" class="bg-blue-600 px-3 rounded-lg text-[9px] font-bold hover:bg-blue-500 transition-all">SIMPAN</button>
             </div>
         </div>
 
@@ -81,7 +89,6 @@
     </div>
 
     <script>
-        // MASUKKAN URL WEB APP KAMU DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbwz8DztBtHz4Ktp-ChdjFO4ePvgnoC3PflzMX3x-Tqse9jJj0BMXAwxBU7YM2p4g7IyLw/exec";
         
         let dataMaster = [];
@@ -132,21 +139,27 @@
             });
         }
 
+        // FUNGSI TAMBAH WARGA YANG SUDAH DIPERBAIKI
         async function tambahWarga() {
             const nama = document.getElementById('new-nama').value;
+            const aktivasi = document.getElementById('new-aktivasi').value; // Mengambil data aktivasi
             const nominal = document.getElementById('new-nominal').value;
             const btn = document.getElementById('btn-tambah');
+            
             if(!nama || !nominal) return alert("Isi Nama & Nominal!");
             
             btn.innerText = "...";
             btn.disabled = true;
             try {
-                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}`);
+                // Menambahkan parameter &aktivasi ke URL
+                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(nama)}&nominal=${nominal}&aktivasi=${encodeURIComponent(aktivasi)}`);
                 alert("Warga Berhasil Ditambahkan!");
                 document.getElementById('new-nama').value = "";
                 document.getElementById('new-nominal').value = "";
                 fetchInitialData();
-            } catch(e) { fetchInitialData(); }
+            } catch(e) { 
+                fetchInitialData(); 
+            }
             btn.innerText = "SIMPAN";
             btn.disabled = false;
         }
