@@ -41,20 +41,18 @@
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
         
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 35px; height: 35px;
             background: linear-gradient(135deg, #f5d173, #d4af37);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
 
         .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; font-size: 11px; outline: none; color: white; }
 
-        /* STYLE FILTER */
         .filter-btn { font-size: 8px; padding: 8px 2px; border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; color: #6b7280; font-weight: 800; }
         .filter-active { background: #d4af37; color: black; }
+
+        /* ANIMASI MINIMIZE */
+        #content-tambah { display: none; transition: all 0.3s ease-in-out; }
     </style>
 </head>
 <body class="p-4">
@@ -92,35 +90,39 @@
 
         <div class="card p-4 rounded-[2rem] min-h-[400px]">
             <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-3 mb-4 uppercase">
-            
             <div id="filter-box" class="flex gap-2 mb-4">
                 <button onclick="setFilter('semua', this)" class="filter-btn filter-active uppercase">Semua</button>
-                <button onclick="setFilter('belum', this)" class="filter-btn uppercase">Belum Bayar</button>
+                <button onclick="setFilter('belum', this)" class="filter-btn uppercase">Belum</button>
                 <button onclick="setFilter('lunas', this)" class="filter-btn uppercase">Lunas</button>
             </div>
-
             <div id="area-data" class="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1"></div>
         </div>
 
-        <div id="form-tambah" class="card p-4 rounded-2xl space-y-3">
-            <p class="text-[9px] font-black text-[#d4af37] uppercase tracking-widest text-center">Tambah Pelanggan Baru</p>
-            <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase col-span-2">
-                <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark">
-                <input type="number" id="new-aktivasi" placeholder="TGL AKTIVASI" class="input-dark">
-                <button onclick="tambahPelanggan(event)" class="gold-btn col-span-2 py-3 rounded-xl text-[9px] font-black uppercase">Simpan</button>
+        <div class="card rounded-2xl overflow-hidden shadow-xl">
+            <button onclick="toggleTambah()" class="w-full p-4 flex justify-between items-center gold-btn">
+                <span class="text-[10px] font-black uppercase tracking-widest">Tambah Pelanggan Baru</span>
+                <span id="icon-panah">⊕</span>
+            </button>
+            
+            <div id="content-tambah" class="p-4 space-y-3 bg-[#1a1a1c]">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase col-span-2">
+                    <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark">
+                    <input type="number" id="new-aktivasi" placeholder="TGL AKTIVASI" class="input-dark">
+                    <button onclick="tambahPelanggan(event)" class="bg-white text-black font-black col-span-2 py-3 rounded-xl text-[10px] uppercase">Simpan Sekarang</button>
+                </div>
             </div>
         </div>
 
         <div class="card p-2 rounded-2xl flex gap-2 items-center">
-            <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 outline-none text-white">
+            <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 outline-none text-white font-bold">
                 <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
                 <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
                 <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                 <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
             </select>
-            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-2.5 rounded-xl w-16 border border-white/10 outline-none text-center text-white">
-            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2.5 rounded-xl text-[8px] uppercase">Gen Massal</button>
+            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-3 rounded-xl w-16 border border-white/10 outline-none text-center text-white font-bold">
+            <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-3 rounded-xl text-[8px] uppercase">Gen Massal</button>
         </div>
     </div>
 
@@ -129,6 +131,19 @@
         let dataTagihan = []; let dataMaster = []; 
         let currentTab = 'tagihan';
         let currentFilter = 'semua';
+
+        // Fungsi Minimize
+        function toggleTambah() {
+            const content = document.getElementById('content-tambah');
+            const icon = document.getElementById('icon-panah');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '⊕';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '⊖';
+            }
+        }
 
         async function load() {
             try {
@@ -162,7 +177,6 @@
             if (currentTab === 'tagihan') {
                 document.getElementById('filter-box').style.display = 'flex';
                 let hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
-                
                 if (currentFilter === 'belum') hasil = hasil.filter(d => String(d.lunas).toLowerCase() == "false");
                 if (currentFilter === 'lunas') hasil = hasil.filter(d => String(d.lunas).toLowerCase() == "true");
 
@@ -208,9 +222,10 @@
                 await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
                 alert("Berhasil!");
                 document.getElementById('new-nama').value = ""; document.getElementById('new-nominal').value = ""; document.getElementById('new-aktivasi').value = "";
+                toggleTambah(); // Tutup lagi formnya
                 load();
             } catch(e) { alert("Error!"); }
-            finally { btn.innerText = "SIMPAN"; btn.disabled = false; }
+            finally { btn.innerText = "Simpan Sekarang"; btn.disabled = false; }
         }
 
         async function bayar(id) { if(confirm("Bayar?")) { await fetch(`${API_URL}?action=update&id=${id}`); load(); } }
