@@ -12,64 +12,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
-        
         body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
         .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
-        
-        /* DESAIN KARTU ADMIN */
-        .card-custom { 
-            background: #151517; 
-            border-radius: 15px; 
-            border-top: 4px solid #ff0000; 
-            padding: 10px;
-            min-height: 130px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+        .card-custom { background: #151517; border-radius: 15px; border-top: 4px solid #ff0000; padding: 10px; min-height: 130px; display: flex; flex-direction: column; justify-content: space-between; }
         .card-lunas { border-top: 4px solid #10b981 !important; }
-        
         .nama-pelanggan { font-size: 10px; font-weight: 900; color: #9ca3af; text-transform: uppercase; line-height: 1.1; margin-bottom: 4px; }
         .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
         .nominal-lunas { color: #10b981; text-shadow: none; }
-        
-        .tgl-label { font-size: 7px; font-weight: 600; color: #6b7280; text-align: center; letter-spacing: 1px; }
-        .tgl-angka { 
-            font-family: 'Inter', sans-serif; 
-            font-size: 32px; 
-            font-weight: 300; 
-            line-height: 1; 
-            color: #fff; 
-            text-align: center; 
-            margin: 2px 0;
-        }
-        .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; margin-top: 2px; }
-        
+        .tgl-angka { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 300; line-height: 1; color: #fff; text-align: center; }
         .btn-bayar { background: #ff0000; border-radius: 10px; font-weight: 900; font-size: 9px; padding: 7px 0; margin-top: 8px; }
         .btn-lunas { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; font-size: 9px; padding: 7px 0; border-radius: 10px; font-weight: 900; margin-top: 8px; }
-
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
-        .filter-btn { font-size: 7px; padding: 6px 2px; border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; }
-        .filter-active { background: #d4af37; color: black; font-weight: 900; }
-
-        /* AVATAR PROFIL KUSTOM */
-        .profile-icon {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #f5d173, #d4af37);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
+        .profile-icon { width: 35px; height: 35px; background: linear-gradient(135deg, #f5d173, #d4af37); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 8px; font-size: 10px; outline: none; }
     </style>
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto space-y-4">
         
-        <div class="flex items-center justify-between pb-2 px-1">
+        <div class="flex items-center justify-between pb-2">
             <div class="flex items-center gap-3">
                 <div class="profile-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" class="w-5 h-5">
@@ -77,13 +39,9 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-black text-[#d4af37] leading-none">PLALANGAN <span class="text-white">.NET</span></h1>
-                    <p class="text-[7px] font-bold text-gray-500 tracking-[0.2em] uppercase">Administrator Dashboard</p>
+                    <h1 class="text-lg font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
+                    <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">Administrator</p>
                 </div>
-            </div>
-            <div class="flex items-center gap-1.5 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-[8px] font-bold text-green-500 uppercase">System Active</span>
             </div>
         </div>
 
@@ -94,58 +52,54 @@
             </div>
             <div class="p-3 card rounded-2xl border-b-2 border-green-600">
                 <p class="text-[8px] text-gray-400 font-bold uppercase">MASUK</p>
-                <h3 id="stat-uang" class="text-lg font-black text-green-500 truncate text-xs">Rp 0</h3>
+                <h3 id="stat-uang" class="text-lg font-black text-green-500 text-xs">Rp 0</h3>
             </div>
         </div>
 
-        <div class="flex card rounded-2xl overflow-hidden p-1">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2.5 text-[10px] font-black tab-active rounded-xl uppercase">Tagihan</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2.5 text-[10px] font-black text-gray-500 rounded-xl uppercase">Pelanggan</button>
+        <div class="flex card rounded-2xl p-1">
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2 text-[10px] font-black tab-active rounded-xl uppercase">Tagihan</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2 text-[10px] font-black text-gray-500 rounded-xl uppercase">Pelanggan</button>
         </div>
 
-        <div class="card p-4 rounded-[2rem] min-h-[450px]">
+        <div class="card p-4 rounded-[2rem] min-h-[400px]">
             <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none border-b border-white/10 pb-3 mb-4 uppercase">
-            
-            <div id="filter-container" class="flex gap-1.5 mb-5">
-                <button onclick="setFilter('semua', this)" class="filter-btn filter-active uppercase">Semua</button>
-                <button onclick="setFilter('belum', this)" class="filter-btn uppercase">Belum</button>
-                <button onclick="setFilter('lunas', this)" class="filter-btn uppercase">Lunas</button>
-            </div>
+            <div id="area-data" class="grid grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-1"></div>
+        </div>
 
-            <div id="area-data" class="grid grid-cols-2 gap-2 max-h-[480px] overflow-y-auto pr-1">
+        <div id="form-tambah" class="card p-4 rounded-2xl space-y-3">
+            <p class="text-[9px] font-black text-[#d4af37] uppercase tracking-widest text-center">Tambah Pelanggan Baru</p>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase">
+                <input type="number" id="new-nominal" placeholder="NOMINAL (ANGKA)" class="input-dark">
+                <input type="number" id="new-aktivasi" placeholder="TGL AKTIVASI" class="input-dark">
+                <button onclick="tambahPelanggan()" class="gold-btn rounded-xl text-[9px] font-black uppercase">Simpan</button>
             </div>
         </div>
 
         <div class="card p-2 rounded-2xl flex gap-2 items-center">
-            <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 outline-none">
+            <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 outline-none text-white">
                 <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
                 <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
                 <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                 <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
             </select>
-            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-2.5 rounded-xl w-16 border border-white/10 outline-none text-center">
+            <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-2.5 rounded-xl w-16 border border-white/10 outline-none text-center text-white">
             <button onclick="prosesGenerate()" id="btn-massal" class="gold-btn px-4 py-2.5 rounded-xl text-[8px]">GEN MASSAL</button>
         </div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
-        let dataTagihan = [];
-        let dataMaster = [];
-        let currentTab = 'tagihan';
-        let filterStatus = 'semua';
+        let dataTagihan = []; let dataMaster = []; let currentTab = 'tagihan';
 
         async function load() {
-            const area = document.getElementById('area-data');
-            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-30 uppercase tracking-widest'>Sinkronisasi Data...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
                 dataTagihan = json.tagihan || [];
                 dataMaster = json.master || [];
-                updateStats();
-                render();
-            } catch(e) { area.innerHTML = "Error!"; }
+                updateStats(); render();
+            } catch(e) { console.log(e); }
         }
 
         function updateStats() {
@@ -159,95 +113,58 @@
             const cari = document.getElementById('cari').value.toUpperCase();
             const area = document.getElementById('area-data');
             area.innerHTML = "";
-
             if (currentTab === 'tagihan') {
-                document.getElementById('filter-container').classList.remove('hidden');
-                let hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
-                if (filterStatus === 'belum') hasil = hasil.filter(d => String(d.lunas).toLowerCase() === "false");
-                if (filterStatus === 'lunas') hasil = hasil.filter(d => String(d.lunas).toLowerCase() === "true");
-
-                hasil.forEach(h => {
+                dataTagihan.filter(d => d.nama.toUpperCase().includes(cari)).forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
-                    area.innerHTML += `
-                    <div class="card-custom ${lunas ? 'card-lunas' : ''}">
-                        <div class="flex gap-1 h-full items-center">
-                            <div class="flex-1 border-r border-white/5 pr-1 h-full flex flex-col justify-center">
+                    area.innerHTML += `<div class="card-custom ${lunas ? 'card-lunas' : ''}">
+                        <div class="flex gap-1 items-center">
+                            <div class="flex-1 border-r border-white/5 pr-1 flex flex-col justify-center">
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
                                 <h2 class="nominal-glow ${lunas ? 'nominal-lunas' : ''}">Rp${Number(h.jumlah).toLocaleString('id-ID')}</h2>
                             </div>
-                            <div class="w-12 flex flex-col justify-center items-center">
-                                <p class="tgl-label">TGL</p>
-                                <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
-                                <p class="bulan-label truncate w-full text-center">${h.bulan}</p>
-                            </div>
+                            <div class="w-10 text-center"><h1 class="tgl-angka">${h.aktivasi || '0'}</h1><p class="text-[7px] uppercase">${h.bulan}</p></div>
                         </div>
-                        <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full ${lunas ? 'btn-lunas' : 'btn-bayar text-white'} uppercase">
-                            ${lunas ? 'LUNAS' : 'BAYAR'}
-                        </button>
+                        <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full ${lunas ? 'btn-lunas' : 'btn-bayar text-white'} uppercase">${lunas ? 'LUNAS' : 'BAYAR'}</button>
                     </div>`;
                 });
             } else {
-                document.getElementById('filter-container').classList.add('hidden');
-                const hasil = dataMaster.filter(d => d.nama.toUpperCase().includes(cari));
-                hasil.forEach(h => {
-                    area.innerHTML += `
-                    <div class="card-custom" style="border-top: 4px solid #3b82f6;">
-                        <div class="flex gap-1 h-full items-center">
-                            <div class="flex-1 border-r border-white/5 pr-1 h-full flex flex-col justify-center">
+                dataMaster.filter(d => d.nama.toUpperCase().includes(cari)).forEach(h => {
+                    area.innerHTML += `<div class="card-custom" style="border-top: 4px solid #3b82f6;">
+                        <div class="flex gap-1 items-center h-full">
+                            <div class="flex-1 border-r border-white/5 pr-1 flex flex-col justify-center">
                                 <h4 class="nama-pelanggan truncate">${h.nama}</h4>
                                 <h2 class="text-white font-black text-[12px]">Rp${Number(h.nominal).toLocaleString('id-ID')}</h2>
                             </div>
-                            <div class="w-12 flex flex-col justify-center items-center">
-                                <p class="tgl-label">AKT</p>
-                                <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
-                            </div>
+                            <div class="w-10 text-center"><p class="text-[7px]">AKT</p><h1 class="tgl-angka text-blue-400">${h.aktivasi || '0'}</h1></div>
                         </div>
-                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-2 bg-blue-600 rounded-xl font-black text-[8px] uppercase mt-2">GENERATE</button>
+                        <button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full py-2 bg-blue-600 rounded-xl font-black text-[8px] mt-2 uppercase">GENERATE</button>
                     </div>`;
                 });
             }
         }
 
-        function setFilter(status, el) {
-            filterStatus = status;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-active'));
-            el.classList.add('filter-active');
-            render();
+        async function tambahPelanggan() {
+            const n = document.getElementById('new-nama').value;
+            const m = document.getElementById('new-nominal').value;
+            const a = document.getElementById('new-aktivasi').value;
+            if(!n || !m) return alert("Isi Nama & Nominal!");
+            await fetch(`${API_URL}?action=add_master&nama=${n}&nominal=${m}&aktivasi=${a}`);
+            alert("Berhasil Tambah Anggota!"); location.reload();
         }
 
-        function switchTab(t) {
-            currentTab = t;
-            document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan');
-            document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master');
-            render();
-        }
-
-        async function bayar(id) {
-            if(!confirm("Proses pembayaran?")) return;
-            await fetch(`${API_URL}?action=update&id=${id}`);
-            load();
-        }
-
-        async function genSingle(n, a, m) {
+        async function bayar(id) { if(confirm("Bayar?")) { await fetch(`${API_URL}?action=update&id=${id}`); load(); } }
+        async function genSingle(n, a, m) { 
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Generate tagihan untuk ${n}?`)) return;
-            const res = await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
-            const text = await res.text();
-            if(text === "Double") alert("Data sudah ada untuk bulan ini!");
-            else { alert("Berhasil!"); switchTab('tagihan'); load(); }
+            await fetch(`${API_URL}?action=generate_single&nama=${n}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
+            alert("Berhasil!"); load();
         }
-
         async function prosesGenerate() {
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Generate massal bulan ${b}?`)) return;
-            document.getElementById('btn-massal').innerText = "...";
-            const res = await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`);
-            alert(await res.text());
-            location.reload();
+            if(confirm(`Gen Massal ${b}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); location.reload(); }
         }
-
+        function switchTab(t) { currentTab = t; document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan'); document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master'); render(); }
         window.onload = load;
     </script>
 </body>
