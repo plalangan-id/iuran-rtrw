@@ -4,171 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLALANGAN.NET ADMIN</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
         body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
-        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
+        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
         .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
-        
-        /* STYLE TABEL */
+        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; font-size: 11px; outline: none; color: white; width: 100%; }
         table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        th { text-align: left; padding: 12px 8px; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
-        
-        .status-lunas { color: #10b981; font-weight: 900; }
-        .status-belum { color: #ef4444; font-weight: 900; }
-        
-        .btn-aksi { padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 9px; text-transform: uppercase; }
-        .btn-bayar-tabel { background: #ef4444; color: white; }
-        .btn-lunas-tabel { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; }
-        .btn-gen-tabel { background: #3b82f6; color: white; }
-
+        th { text-align: left; padding: 10px 8px; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .btn-slim { padding: 8px 4px; border-radius: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; transition: all 0.2s; }
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; }
         .blue-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
         .gray-btn { background: #262629; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; font-size: 11px; outline: none; color: white; }
-        .filter-btn { font-size: 8px; padding: 8px 2px; border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; color: #6b7280; font-weight: 800; }
-        .filter-active { background: #d4af37; color: black; }
+        .hidden-table { display: none; }
+        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; items-center; justify-content: center; font-size: 12px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .filter-active { border: 2px solid white; transform: scale(1.1); }
     </style>
 </head>
 <body class="p-4">
-    <div class="max-w-md mx-auto space-y-4">
+    <div class="max-w-md mx-auto space-y-3">
         
         <div class="flex items-center justify-between pb-2 border-b border-white/5">
-            <div>
-                <h1 class="text-lg font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
-                <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">Admin Dashboard</p>
-            </div>
-            <div class="flex gap-4">
-                <div class="text-right">
-                    <p class="text-[7px] text-gray-400 font-bold uppercase">BELUM</p>
-                    <h3 id="stat-belum" class="text-sm font-black text-red-500">0</h3>
+            <h1 class="text-base font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
+            <div class="flex gap-3 text-right">
+                <div class="border-r border-white/10 pr-3">
+                    <p class="text-[6px] text-gray-500 font-bold uppercase">BELUM</p>
+                    <h3 id="stat-belum" class="text-xs font-black text-red-500">0</h3>
                 </div>
-                <div class="text-right">
-                    <p class="text-[7px] text-gray-400 font-bold uppercase">MASUK</p>
-                    <h3 id="stat-uang" class="text-sm font-black text-green-500">Rp 0</h3>
+                <div>
+                    <p class="text-[6px] text-gray-500 font-bold uppercase">MASUK</p>
+                    <h3 id="stat-uang" class="text-xs font-black text-green-500">Rp 0</h3>
                 </div>
             </div>
         </div>
 
-        <div class="flex card rounded-2xl p-1">
-            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-2 text-[10px] font-black tab-active rounded-xl uppercase">📋 Tagihan</button>
-            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-2 text-[10px] font-black text-gray-500 rounded-xl uppercase">👥 Pelanggan</button>
+        <div class="flex card p-1">
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-1.5 text-[9px] tab-active uppercase font-black">📋 Tagihan</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-1.5 text-[9px] text-gray-500 uppercase font-black">👥 Member</button>
         </div>
 
-        <div class="card rounded-[1.5rem] overflow-hidden shadow-2xl">
-            <div class="p-4 bg-white/5 flex items-center gap-2">
-                <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="w-full bg-transparent text-xs font-bold outline-none uppercase">
+        <div class="card overflow-hidden">
+            <div class="flex items-center bg-white/5 border-b border-white/5 pr-3 gap-2">
+                <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="flex-1 bg-transparent p-3 text-[10px] font-bold outline-none uppercase">
+                
+                <button id="f-belum" onclick="setFilter('belum')" class="filter-btn bg-red-600/20 text-red-500">🔴</button>
+                
+                <button id="f-lunas" onclick="setFilter('lunas')" class="filter-btn bg-green-600/20 text-green-500">🟢</button>
+                
+                <button onclick="toggleTabel()" class="filter-btn bg-white/5">
+                    <span id="ic-min" class="text-[10px]">🔒</span>
+                </button>
             </div>
-            
-            <div id="filter-box" class="flex gap-1 p-2 bg-black/40 border-b border-white/5">
-                <button onclick="setFilter('semua', this)" class="filter-btn filter-active">SEMUA</button>
-                <button onclick="setFilter('belum', this)" class="filter-btn">BELUM</button>
-                <button onclick="setFilter('lunas', this)" class="filter-btn">LUNAS</button>
-            </div>
-
-            <div class="overflow-x-auto max-h-[400px]">
-                <table>
-                    <thead class="bg-black/50 sticky top-0">
-                        <tr id="head-tabel"></tr>
-                    </thead>
-                    <tbody id="body-tabel"></tbody>
-                </table>
+            <div id="wrapper-tabel" class="overflow-x-auto max-h-[350px] hidden-table">
+                <table><thead class="bg-black/50 sticky top-0"><tr id="head-tabel"></tr></thead><tbody id="body-tabel"></tbody></table>
             </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
-            <button onclick="togglePanel('tambah')" class="py-3 px-2 flex justify-between items-center gold-btn rounded-xl shadow-lg font-black uppercase text-[8px]">
-                <span>Tambah</span><span id="ic-tambah">⊕</span>
-            </button>
-            <button onclick="togglePanel('gen')" class="py-3 px-2 flex justify-between items-center blue-btn rounded-xl shadow-lg font-black uppercase text-[8px]">
-                <span>Gen</span><span id="ic-gen">⊕</span>
-            </button>
-            <button onclick="togglePanel('info')" class="py-3 px-2 flex justify-between items-center gray-btn rounded-xl shadow-lg font-black uppercase text-[8px]">
-                <span>Info</span><span id="ic-info">⊕</span>
-            </button>
+            <button onclick="togglePanel('tambah')" class="btn-slim gold-btn">Tambah ⊕</button>
+            <button onclick="togglePanel('gen')" class="btn-slim blue-btn">Gen ⊕</button>
+            <button onclick="togglePanel('info')" class="btn-slim gray-btn">Info ⊕</button>
         </div>
 
-        <div id="panel-tambah" class="card rounded-2xl p-4 space-y-3 hidden">
+        <div id="panel-tambah" class="card p-4 space-y-3 hidden">
+            <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase font-bold text-[10px]">
             <div class="grid grid-cols-2 gap-2">
-                <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase col-span-2 font-bold">
-                <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark font-bold">
-                <input type="number" id="new-aktivasi" placeholder="TGL" class="input-dark font-bold">
-                <button onclick="tambahPelanggan(event)" class="bg-white text-black font-black col-span-2 py-3 rounded-xl text-[10px] uppercase">Simpan</button>
+                <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark text-[10px]">
+                <input type="number" id="new-aktivasi" placeholder="TGL AKT" class="input-dark text-[10px]">
             </div>
+            <button onclick="tambahPelanggan()" class="w-full bg-white text-black py-2.5 rounded-xl font-black text-[9px] uppercase">Simpan Pelanggan</button>
         </div>
 
-        <div id="panel-gen" class="card rounded-2xl p-4 hidden">
-            <div class="flex gap-2 items-center">
-                <select id="bln-gen" class="bg-black text-[10px] p-2.5 rounded-xl flex-1 border border-white/10 text-white font-bold uppercase">
-                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
-                    <option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option>
-                    <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
-                    <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+        <div id="panel-gen" class="card p-4 space-y-3 hidden">
+            <div class="flex gap-2">
+                <select id="bln-gen" class="input-dark flex-1 uppercase font-bold text-[10px]">
+                    <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
                 </select>
-                <input type="number" id="thn-gen" value="2025" class="bg-black text-[10px] p-3 rounded-xl w-16 border border-white/10 text-center text-white font-bold">
-                <button onclick="prosesGenerate()" class="blue-btn px-4 py-3 rounded-xl text-[8px] uppercase">Proses</button>
+                <select id="thn-gen" class="input-dark w-24 uppercase font-bold text-[10px]">
+                    <option value="2025">2025</option><option value="2026">2026</option>
+                </select>
             </div>
+            <button onclick="prosesGenerate()" class="w-full blue-btn py-3 rounded-xl text-[9px] uppercase">Buat Tagihan</button>
         </div>
 
-        <div id="panel-info" class="card rounded-2xl overflow-hidden hidden">
-            <div class="bg-white/5 p-3 font-black text-[9px] uppercase tracking-widest border-b border-white/5">Ringkasan Informasi</div>
-            <div class="overflow-x-auto">
-                <table>
-                    <thead>
-                        <tr class="bg-black/20">
-                            <th>Keterangan</th>
-                            <th>Masuk</th>
-                            <th>Keluar</th>
-                            <th>Sisa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="font-bold uppercase">Kas Bulanan</td>
-                            <td class="text-green-500">0</td>
-                            <td class="text-red-500">0</td>
-                            <td class="font-black text-white">0</td>
-                        </tr>
-                        </tbody>
-                </table>
-            </div>
+        <div id="panel-info" class="card p-3 space-y-2 hidden">
+            <div class="flex justify-between items-center"><h3 class="text-[8px] font-black text-[#d4af37] uppercase">📝 CATATAN</h3><span id="save-status" class="text-[6px] text-gray-500 font-bold uppercase">OK</span></div>
+            <textarea id="papan-tulis" oninput="autoSavePapan()" placeholder="Tulis catatan..." class="w-full h-72 bg-black/40 border border-white/5 rounded-2xl p-3 text-[11px] font-bold leading-relaxed outline-none focus:border-[#d4af37] text-gray-300"></textarea>
         </div>
 
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
-        let dataTagihan = []; let dataMaster = []; 
-        let currentTab = 'tagihan';
-        let currentFilter = 'semua';
+        let dataTagihan = [], dataMaster = [], currentTab = 'tagihan', filterMode = 'all';
 
-        // Logika Toggle Panel Otomatis
+        function toggleTabel() {
+            const w = document.getElementById('wrapper-tabel'), icon = document.getElementById('ic-min');
+            if (w.classList.contains('hidden-table')) { w.classList.remove('hidden-table'); icon.innerText = "👁️"; } 
+            else { w.classList.add('hidden-table'); icon.innerText = "🔒"; }
+        }
+
+        // FUNGSI FILTER BARU
+        function setFilter(mode) {
+            if (filterMode === mode) { filterMode = 'all'; } 
+            else { filterMode = mode; }
+            
+            document.getElementById('f-belum').classList.toggle('filter-active', filterMode === 'belum');
+            document.getElementById('f-lunas').classList.toggle('filter-active', filterMode === 'lunas');
+            render();
+            
+            // Otomatis buka tabel kalau lagi di filter
+            const w = document.getElementById('wrapper-tabel');
+            if(filterMode !== 'all' && w.classList.contains('hidden-table')) toggleTabel();
+        }
+
         function togglePanel(nama) {
-            const panels = ['tambah', 'gen', 'info'];
-            panels.forEach(p => {
+            ['tambah', 'gen', 'info'].forEach(p => {
                 const el = document.getElementById('panel-' + p);
-                const ic = document.getElementById('ic-' + p);
-                if (p === nama && el.classList.contains('hidden')) {
-                    el.classList.remove('hidden');
-                    ic.innerText = '⊖';
-                } else {
-                    el.classList.add('hidden');
-                    ic.innerText = '⊕';
-                }
+                (p === nama) ? el.classList.toggle('hidden') : el.classList.add('hidden');
             });
+        }
+
+        function autoSavePapan() {
+            const teks = document.getElementById('papan-tulis').value;
+            localStorage.setItem('plalangan_note', teks);
+            document.getElementById('save-status').innerText = "MENYIMPAN...";
+            clearTimeout(window.sv);
+            window.sv = setTimeout(() => { document.getElementById('save-status').innerText = "TERSIMPAN"; }, 800);
         }
 
         async function load() {
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
-                dataTagihan = json.tagihan || [];
-                dataMaster = json.master || [];
+                dataTagihan = json.tagihan || []; dataMaster = json.master || [];
+                document.getElementById('papan-tulis').value = localStorage.getItem('plalangan_note') || "";
                 updateStats(); render();
             } catch(e) { console.log(e); }
         }
@@ -180,64 +152,40 @@
             document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
         }
 
-        function setFilter(status, btn) {
-            currentFilter = status;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-active'));
-            btn.classList.add('filter-active');
-            render();
-        }
-
         function render() {
-            const cari = document.getElementById('cari').value.toUpperCase();
-            const head = document.getElementById('head-tabel');
-            const body = document.getElementById('body-tabel');
+            const head = document.getElementById('head-tabel'), body = document.getElementById('body-tabel'), cari = document.getElementById('cari').value.toUpperCase();
             body.innerHTML = "";
+            
             if (currentTab === 'tagihan') {
-                document.getElementById('filter-box').style.display = 'flex';
                 head.innerHTML = `<th>Nama</th><th>Akt</th><th>Bulan</th><th>Rp</th><th>Aksi</th>`;
-                let hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
-                if (currentFilter === 'belum') hasil = hasil.filter(d => String(d.lunas).toLowerCase() == "false");
-                if (currentFilter === 'lunas') hasil = hasil.filter(d => String(d.lunas).toLowerCase() == "true");
-                hasil.forEach(h => {
+                let filtered = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
+                
+                // LOGIKA FILTER
+                if (filterMode === 'belum') filtered = filtered.filter(d => String(d.lunas).toLowerCase() == "false");
+                if (filterMode === 'lunas') filtered = filtered.filter(d => String(d.lunas).toLowerCase() == "true");
+
+                filtered.forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
-                    body.innerHTML += `<tr><td class="font-bold uppercase">${h.nama}</td><td class="text-center">${h.aktivasi || '0'}</td><td class="text-[8px] text-gray-500 uppercase">${h.bulan}</td><td class="${lunas ? 'status-lunas' : 'status-belum'} font-bold">Rp${Number(h.jumlah).toLocaleString('id-ID')}</td><td><button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="btn-aksi ${lunas ? 'btn-lunas-tabel' : 'btn-bayar-tabel'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td></tr>`;
+                    body.innerHTML += `<tr><td class="font-bold uppercase text-[9px]">${h.nama}</td><td class="text-center">${h.aktivasi || '0'}</td><td class="text-gray-500 uppercase text-[7px]">${h.bulan}</td><td class="${lunas ? 'text-green-500' : 'text-red-500'} font-bold">Rp${Number(h.jumlah).toLocaleString()}</td><td><button onclick="bayar('${h.id}')" class="px-2 py-0.5 rounded text-[7px] font-black ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td></tr>`;
                 });
             } else {
-                document.getElementById('filter-box').style.display = 'none';
-                head.innerHTML = `<th>Nama</th><th>Akt</th><th>Nominal</th><th>Aksi</th>`;
+                head.innerHTML = `<th>Nama</th><th>Akt</th><th>Rp</th><th>Aksi</th>`;
                 dataMaster.filter(d => d.nama.toUpperCase().includes(cari)).forEach(h => {
-                    body.innerHTML += `<tr><td class="font-bold uppercase">${h.nama}</td><td class="text-center">${h.aktivasi || '0'}</td><td class="font-bold">Rp${Number(h.nominal).toLocaleString('id-ID')}</td><td><button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="btn-aksi btn-gen-tabel">GEN</button></td></tr>`;
+                    body.innerHTML += `<tr><td class="font-bold uppercase text-[9px]">${h.nama}</td><td class="text-center">${h.aktivasi || '0'}</td><td class="font-bold">Rp${Number(h.nominal).toLocaleString()}</td><td><button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="bg-blue-500 text-white px-2 py-0.5 rounded text-[7px] font-black uppercase">Gen</button></td></tr>`;
                 });
             }
         }
 
-        async function tambahPelanggan(e) {
-            const btn = e.target;
-            const n = document.getElementById('new-nama').value;
-            const m = document.getElementById('new-nominal').value;
-            const a = document.getElementById('new-aktivasi').value;
-            if(!n || !m) return alert("Isi Nama & Nominal!");
-            btn.innerText = "..."; btn.disabled = true;
-            try {
-                await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
-                alert("Berhasil!");
-                document.getElementById('new-nama').value = ""; document.getElementById('new-nominal').value = ""; document.getElementById('new-aktivasi').value = "";
-                togglePanel(''); load();
-            } catch(e) { alert("Error!"); }
-            finally { btn.innerText = "Simpan"; btn.disabled = false; }
-        }
-
         async function bayar(id) { if(confirm("Konfirmasi Bayar?")) { await fetch(`${API_URL}?action=update&id=${id}`); load(); } }
-        async function genSingle(n, a, m) { 
-            const b = document.getElementById('bln-gen').value;
-            const t = document.getElementById('thn-gen').value;
-            await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
-            alert("Berhasil!"); load();
+        async function tambahPelanggan() { 
+            const n = document.getElementById('new-nama').value, m = document.getElementById('new-nominal').value, a = document.getElementById('new-aktivasi').value;
+            if(!n || !m) return alert("Isi Nama & Nominal!");
+            await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
+            alert("Berhasil!"); togglePanel(''); load();
         }
         async function prosesGenerate() {
-            const b = document.getElementById('bln-gen').value;
-            const t = document.getElementById('thn-gen').value;
-            if(confirm(`Gen Massal ${b}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); location.reload(); }
+            const b = document.getElementById('bln-gen').value, t = document.getElementById('thn-gen').value;
+            if(confirm(`Generate massal bulan ${b} ${t}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); alert("Selesai!"); load(); }
         }
         function switchTab(t) { currentTab = t; document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan'); document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master'); render(); }
         window.onload = load;
