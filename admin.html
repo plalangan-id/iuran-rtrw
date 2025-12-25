@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLALANGAN.NET ADMIN</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/93/93158.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/93/93158.png">
+    <meta name="theme-color" content="#0a0a0c">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
@@ -12,6 +17,7 @@
         .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
         
+        /* DESAIN KARTU ADMIN */
         .card-custom { 
             background: #151517; 
             border-radius: 15px; 
@@ -24,17 +30,15 @@
         }
         .card-lunas { border-top: 4px solid #10b981 !important; }
         
-        /* SISI KIRI */
         .nama-pelanggan { font-size: 10px; font-weight: 900; color: #9ca3af; text-transform: uppercase; line-height: 1.1; margin-bottom: 4px; }
         .nominal-glow { font-size: 13px; font-weight: 900; color: #ff3131; text-shadow: 0 0 10px rgba(255, 49, 49, 0.4); }
         .nominal-lunas { color: #10b981; text-shadow: none; }
         
-        /* SISI KANAN - DIBUAT LEBIH RAMPING */
         .tgl-label { font-size: 7px; font-weight: 600; color: #6b7280; text-align: center; letter-spacing: 1px; }
         .tgl-angka { 
-            font-family: 'Inter', sans-serif; /* Ganti ke Inter agar lebih modern & ramping */
+            font-family: 'Inter', sans-serif; 
             font-size: 32px; 
-            font-weight: 300; /* Angka dibuat tipis/ramping */
+            font-weight: 300; 
             line-height: 1; 
             color: #fff; 
             text-align: center; 
@@ -42,19 +46,45 @@
         }
         .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; margin-top: 2px; }
         
-        /* BUTTON */
         .btn-bayar { background: #ff0000; border-radius: 10px; font-weight: 900; font-size: 9px; padding: 7px 0; margin-top: 8px; }
         .btn-lunas { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; font-size: 9px; padding: 7px 0; border-radius: 10px; font-weight: 900; margin-top: 8px; }
 
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
         .filter-btn { font-size: 7px; padding: 6px 2px; border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; }
         .filter-active { background: #d4af37; color: black; font-weight: 900; }
+
+        /* AVATAR PROFIL KUSTOM */
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #f5d173, #d4af37);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
     </style>
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto space-y-4">
-        <div class="text-center pb-1">
-            <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
+        
+        <div class="flex items-center justify-between pb-2 px-1">
+            <div class="flex items-center gap-3">
+                <div class="profile-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black text-[#d4af37] leading-none">PLALANGAN <span class="text-white">.NET</span></h1>
+                    <p class="text-[7px] font-bold text-gray-500 tracking-[0.2em] uppercase">Administrator Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">
+                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[8px] font-bold text-green-500 uppercase">System Active</span>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2 text-center">
@@ -83,7 +113,7 @@
             </div>
 
             <div id="area-data" class="grid grid-cols-2 gap-2 max-h-[480px] overflow-y-auto pr-1">
-                </div>
+            </div>
         </div>
 
         <div class="card p-2 rounded-2xl flex gap-2 items-center">
@@ -107,7 +137,7 @@
 
         async function load() {
             const area = document.getElementById('area-data');
-            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-30'>SINKRONISASI...</p>";
+            area.innerHTML = "<p class='col-span-2 text-center py-20 text-[10px] opacity-30 uppercase tracking-widest'>Sinkronisasi Data...</p>";
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
@@ -148,7 +178,7 @@
                             <div class="w-12 flex flex-col justify-center items-center">
                                 <p class="tgl-label">TGL</p>
                                 <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
-                                <p class="bulan-label truncate">${h.bulan}</p>
+                                <p class="bulan-label truncate w-full text-center">${h.bulan}</p>
                             </div>
                         </div>
                         <button ${lunas ? '' : `onclick="bayar('${h.id}')"`} class="w-full ${lunas ? 'btn-lunas' : 'btn-bayar text-white'} uppercase">
@@ -193,7 +223,7 @@
         }
 
         async function bayar(id) {
-            if(!confirm("Bayar?")) return;
+            if(!confirm("Proses pembayaran?")) return;
             await fetch(`${API_URL}?action=update&id=${id}`);
             load();
         }
@@ -201,17 +231,17 @@
         async function genSingle(n, a, m) {
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Generate ${n}?`)) return;
+            if(!confirm(`Generate tagihan untuk ${n}?`)) return;
             const res = await fetch(`${API_URL}?action=generate_single&nama=${encodeURIComponent(n)}&aktivasi=${a}&nominal=${m}&bulan=${b}&tahun=${t}`);
             const text = await res.text();
-            if(text === "Double") alert("Sudah Ada!");
+            if(text === "Double") alert("Data sudah ada untuk bulan ini!");
             else { alert("Berhasil!"); switchTab('tagihan'); load(); }
         }
 
         async function prosesGenerate() {
             const b = document.getElementById('bln-gen').value;
             const t = document.getElementById('thn-gen').value;
-            if(!confirm(`Massal ${b}?`)) return;
+            if(!confirm(`Generate massal bulan ${b}?`)) return;
             document.getElementById('btn-massal').innerText = "...";
             const res = await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`);
             alert(await res.text());
