@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTAL - PLALANGAN.NET</title>
+    <title>PORTAL PELANGGAN - PLALANGAN.NET</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/93/93158.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/93/93158.png">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=Inter:wght@300;500&display=swap');
@@ -11,7 +18,7 @@
         body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
         .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); }
         
-        /* CSS KEMBARAN DARI ADMIN */
+        /* STRUKTUR KARTU (PERSIS ADMIN) */
         .card-custom { 
             background: #151517; 
             border-radius: 15px; 
@@ -36,7 +43,6 @@
             line-height: 1; 
             color: #fff; 
             text-align: center; 
-            margin: 2px 0;
         }
         .bulan-label { font-size: 7px; font-weight: 400; color: #4b5563; text-transform: uppercase; text-align: center; margin-top: 2px; }
         
@@ -44,47 +50,59 @@
         .status-badge-belum { background: #ff0000; color: white; font-size: 9px; padding: 7px 0; border-radius: 10px; font-weight: 900; margin-top: 8px; text-align: center; }
 
         .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; font-weight: 800; }
+
+        /* PERBAIKAN WARNA INPUT & PLACEHOLDER */
+        #cari-input::placeholder {
+            color: rgba(255, 255, 255, 0.3) !important; /* Putih lebih jelas */
+            font-weight: 600;
+        }
+        #cari-input {
+            color: white !important;
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+        #cari-input:focus {
+            border-color: #d4af37;
+        }
     </style>
 </head>
 <body class="p-4">
     <div class="max-w-md mx-auto space-y-4">
+        
         <div class="text-center pb-1">
             <h1 class="text-xl font-black text-[#d4af37]">PLALANGAN <span class="text-white">.NET</span></h1>
-            <p class="text-[9px] text-gray-500 font-bold tracking-[0.2em] uppercase">Billing System </p>
+            <p class="text-[9px] text-gray-500 font-bold tracking-[0.2em] uppercase">Billing System Pelanggan</p>
         </div>
 
-       <div class="card p-6 rounded-[2rem] shadow-2xl">
-    <p class="text-[10px] font-black text-[#d4af37] uppercase mb-4 text-center tracking-[0.2em]">Cek Status Tagihan</p>
-    <input type="text" id="cari-input" placeholder="MASUKKAN NAMA ANDA..." 
-           class="w-full bg-transparent text-center text-xl font-black outline-none border-b-2 border-[#d4af37]/30 focus:border-[#d4af37] pb-3 mb-6 uppercase text-white placeholder:text-white/40">
-    <button onclick="cariTagihan()" id="btn-cari" class="gold-btn w-full py-4 rounded-xl text-[10px] uppercase tracking-widest active:scale-95 transition-all">Periksa Data</button>
-   </div>
+        <div class="card p-6 rounded-[2rem] shadow-2xl">
+            <p class="text-[10px] font-black text-[#d4af37] uppercase mb-4 text-center tracking-[0.2em]">Cek Status Tagihan</p>
+            <input type="text" id="cari-input" placeholder="MASUKKAN NAMA ANDA" 
+                   class="w-full bg-transparent text-center text-xl font-black outline-none border-b-2 pb-3 mb-6 uppercase">
+            <button onclick="cariTagihan()" id="btn-cari" class="gold-btn w-full py-4 rounded-xl text-[10px] uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-yellow-900/20">Periksa Data</button>
+        </div>
 
-        <div id="area-hasil" class="grid grid-cols-2 gap-2 hidden">
-            </div>
+        <div id="area-hasil" class="grid grid-cols-2 gap-2 hidden"></div>
 
         <div id="loading" class="hidden text-center py-10">
-            <p class="text-[10px] opacity-30 animate-pulse">MENGHUBUNGKAN KE SERVER...</p>
+            <p class="text-[10px] opacity-30 animate-pulse uppercase tracking-widest">Mencari Data...</p>
         </div>
 
-        <p class="text-[8px] text-gray-600 font-bold uppercase text-center pt-4 tracking-widest">Plalangan.net &copy; 2026</p>
+        <p class="text-[8px] text-gray-700 font-bold uppercase text-center pt-4 tracking-widest">Plalangan.net &copy; 2025</p>
     </div>
 
     <script>
-        // URL SAMA DENGAN ADMIN MAS
+        // URL SAMA DENGAN ADMIN
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
 
         async function cariTagihan() {
-            const input = document.getElementById('cari-input').value.toUpperCase();
+            const input = document.getElementById('cari-input').value.trim().toUpperCase();
             const area = document.getElementById('area-hasil');
             const loading = document.getElementById('loading');
             const btn = document.getElementById('btn-cari');
 
             if (!input) return alert("Silakan masukkan nama!");
 
-            // UI State
             btn.disabled = true;
-            btn.innerText = "MENCARI...";
+            btn.innerText = "PROSES...";
             area.classList.add('hidden');
             loading.classList.remove('hidden');
             area.innerHTML = "";
@@ -94,16 +112,13 @@
                 const json = await res.json();
                 const dataTagihan = json.tagihan || [];
 
-                // Filter Nama
                 const hasil = dataTagihan.filter(d => d.nama.toUpperCase().includes(input));
 
                 if (hasil.length === 0) {
-                    area.innerHTML = `<p class="col-span-2 text-center text-[10px] py-10 text-red-500 font-bold">DATA TIDAK DITEMUKAN</p>`;
+                    area.innerHTML = `<p class="col-span-2 text-center text-[10px] py-10 text-red-500 font-bold uppercase tracking-widest">Data tidak ditemukan</p>`;
                 } else {
                     hasil.forEach(h => {
                         const lunas = String(h.lunas).toLowerCase() == "true";
-                        
-                        // STRUKTUR KARTU DISAMAKAN 100% DENGAN ADMIN
                         area.innerHTML += `
                         <div class="card-custom ${lunas ? 'card-lunas' : ''}">
                             <div class="flex gap-1 h-full items-center">
@@ -114,17 +129,17 @@
                                 <div class="w-12 flex flex-col justify-center items-center">
                                     <p class="tgl-label">TGL</p>
                                     <h1 class="tgl-angka">${h.aktivasi || '0'}</h1>
-                                    <p class="bulan-label truncate">${h.bulan}</p>
+                                    <p class="bulan-label truncate w-full">${h.bulan}</p>
                                 </div>
                             </div>
                             <div class="${lunas ? 'status-badge-lunas' : 'status-badge-belum'} uppercase">
-                                ${lunas ? 'SUDAH LUNAS' : 'BELUM BAYAR'}
+                                ${lunas ? 'LUNAS' : 'BELUM BAYAR'}
                             </div>
                         </div>`;
                     });
                 }
             } catch (e) {
-                area.innerHTML = `<p class="col-span-2 text-center text-red-500 text-[10px]">Gagal memuat data. Periksa koneksi.</p>`;
+                area.innerHTML = `<p class="col-span-2 text-center text-red-500 text-[10px]">Error!</p>`;
             } finally {
                 loading.classList.add('hidden');
                 area.classList.remove('hidden');
