@@ -200,7 +200,7 @@
                         <td class="font-bold uppercase text-[9px] truncate">${h.nama} ${!lunas ? '📌' : ''}</td>
                         <td class="text-center">${h.aktivasi || '0'}</td>
                         <td class="${lunas ? 'text-green-500' : 'text-red-500'} font-bold">Rp${Number(h.jumlah).toLocaleString()}</td>
-                        <td><button onclick="bayar('${h.id}')" class="w-full py-1 rounded text-[7px] font-black transition-all active:scale-75 ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white shadow-lg'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
+                        <td><button onclick="bayar('${h.id}')" class="w-full py-1 rounded text-[7px] font-black transition-all active:scale-85 ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white shadow-lg'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
                     </tr>`;
                 });
             } else {
