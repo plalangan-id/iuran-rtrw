@@ -32,7 +32,7 @@
         .gray-btn { background: #262629; color: white; border: 1px solid rgba(255,255,255,0.1); }
         .purple-btn { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; }
         
-        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; items-center; justify-content: center; font-size: 12px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
         .filter-active { border: 2px solid white; transform: scale(1.1); }
         .hidden-table { display: none; }
         .animate-pop { animation: pop 0.2s ease-out; }
@@ -92,15 +92,17 @@
         </div>
 
         <div id="panel-gen" class="card p-4 space-y-3 hidden animate-pop">
-            <div class="flex gap-2">
-                <select id="bln-gen" class="input-dark flex-1 uppercase font-bold text-[10px]">
+            <input type="text" id="cari-gen" oninput="cariGenNama()" placeholder="CARI NAMA UNTUK GEN..." class="input-dark uppercase font-bold text-[10px] border-dashed border-[#3b82f6]">
+            <input type="text" id="nama-gen" placeholder="NAMA (TERISI OTOMATIS/MANUAL)" class="input-dark uppercase font-bold text-[10px]">
+            <div class="grid grid-cols-2 gap-2">
+                <select id="bln-gen" class="input-dark uppercase font-bold text-[10px]">
                     <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
                 </select>
-                <select id="thn-gen" class="input-dark w-24 uppercase font-bold text-[10px]">
+                <select id="thn-gen" class="input-dark uppercase font-bold text-[10px]">
                     <option value="2025">2025</option><option value="2026">2026</option>
                 </select>
             </div>
-            <button onclick="prosesGenerate()" class="w-full blue-btn py-3 rounded-xl text-[9px] uppercase">Mulai Generate Masal</button>
+            <button onclick="prosesGenerate()" class="w-full blue-btn py-3 rounded-xl text-[9px] font-black uppercase shadow-lg">Mulai Generate Massal</button>
         </div>
 
         <div id="panel-rekap" class="card p-4 hidden animate-pop">
@@ -199,17 +201,30 @@
                         <td class="font-bold uppercase text-[9px] truncate">${h.nama}</td>
                         <td class="text-center">${h.aktivasi || '0'}</td>
                         <td class="text-gray-400 font-bold">Rp${Number(h.nominal).toLocaleString()}</td>
-                        <td><button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full bg-blue-500 text-white py-1 rounded text-[7px] font-black uppercase active:scale-75 transition-all shadow-md">Gen</button></td>
+                        <td><button onclick="isiPanelGen('${h.nama}')" class="w-full bg-blue-500 text-white py-1 rounded text-[7px] font-black uppercase active:scale-75 transition-all shadow-md">Gen</button></td>
                     </tr>`;
                 });
             }
         }
 
+        // FUNGSI BARU UNTUK ISI NAMA KE PANEL GEN
+        function isiPanelGen(nama) {
+            document.getElementById('nama-gen').value = nama;
+            togglePanel('gen');
+        }
+
+        // FUNGSI CARI NAMA DI DALAM PANEL GEN
+        function cariGenNama() {
+            const input = document.getElementById('cari-gen').value.toUpperCase();
+            const found = dataMaster.find(d => d.nama.toUpperCase() === input);
+            if(found) document.getElementById('nama-gen').value = found.nama;
+        }
+
         async function genSingle(nama, akt, nominal) {
-            const bln = prompt("Generate untuk bulan apa?", "Januari");
-            if(!bln) return;
+            const bln = document.getElementById('bln-gen').value;
+            const thn = document.getElementById('thn-gen').value;
             if(confirm(`Buat tagihan ${nama} bulan ${bln}?`)) {
-                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=2025&nama_tunggal=${encodeURIComponent(nama)}`);
+                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}&nama_tunggal=${encodeURIComponent(nama)}`);
                 alert("Berhasil!"); switchTab('tagihan'); load();
             }
         }
@@ -222,8 +237,12 @@
             alert("Berhasil!"); togglePanel(''); load();
         }
         async function prosesGenerate() {
-            const b = document.getElementById('bln-gen').value, t = document.getElementById('thn-gen').value;
-            if(confirm(`Generate massal bulan ${b} ${t}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); alert("Selesai!"); load(); }
+            const b = document.getElementById('bln-gen').value, t = document.getElementById('thn-gen').value, n = document.getElementById('nama-gen').value;
+            let url = `${API_URL}?action=generate&bulan=${b}&tahun=${t}`;
+            if(n) url += `&nama_tunggal=${encodeURIComponent(n)}`;
+            
+            const msg = n ? `Generate tagihan untuk ${n}?` : `Generate MASSAL semua warga bulan ${b} ${t}?`;
+            if(confirm(msg)) { await fetch(url); alert("Selesai!"); load(); }
         }
         function switchTab(t) { currentTab = t; document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan'); document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master'); render(); }
         function autoSavePapan() {
