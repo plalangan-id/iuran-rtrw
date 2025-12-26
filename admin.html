@@ -8,28 +8,43 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
         
-        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; padding-top: 5vh; }
-        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: #0a0a0c; 
+            color: white; 
+            min-height: 100vh; 
+            padding-top: 5vh; /* Posisi aman dari status bar HP */
+        }
         
-        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; font-size: 11px; outline: none; color: white; width: 100%; }
+        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; transition: all 0.3s; }
+        
+        .input-dark { 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 10px; padding: 10px; 
+            font-size: 11px; outline: none; color: white; width: 100%; 
+        }
         
         table { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: 10px; table-layout: fixed; }
         th { text-align: left; padding: 10px 8px; color: #6b7280; text-transform: uppercase; }
-        td { padding: 12px 8px; }
+        td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
 
-        /* KEMBALI KE SETELAN AWAL KETUA */
-        .baris-belum { background: rgba(239, 68, 68, 0.2) !important; border-left: 4px solid #ef4444; }
-        .baris-lunas { background: rgba(34, 197, 94, 0.2) !important; border-left: 4px solid #22c55e; }
+        /* Styling Baris Merah (Belum Bayar) */
+        .baris-belum { 
+            background: rgba(239, 68, 68, 0.08) !important; 
+            border-left: 3px solid #ef4444; 
+        }
 
-        .btn-slim { padding: 8px 4px; border-radius: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; }
-        .gold-btn { background: #d4af37; color: black; }
-        .blue-btn { background: #3b82f6; color: white; }
-        .green-btn { background: #22c55e; color: white; }
-        .red-btn { background: #ef4444; color: white; }
-        .gray-btn { background: #333; color: white; }
+        .btn-slim { padding: 8px 4px; border-radius: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; transition: all 0.1s; }
+        .btn-slim:active { transform: scale(0.92); }
         
-        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
+        .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; }
+        .blue-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .gray-btn { background: #262629; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .purple-btn { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; }
+        
+        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid rgba(255,255,255,0.1); }
         .hidden-table { display: none; }
         .animate-pop { animation: pop 0.2s ease-out; }
         @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -70,11 +85,12 @@
         <div class="grid grid-cols-4 gap-2">
             <button onclick="togglePanel('tambah')" class="btn-slim gold-btn">Tambah</button>
             <button onclick="togglePanel('gen')" class="btn-slim blue-btn">Gen</button>
-            <button onclick="togglePanel('rekap')" class="btn-slim gray-btn">Rekap</button>
+            <button onclick="togglePanel('rekap')" class="btn-slim purple-btn">Rekap</button>
             <button onclick="togglePanel('info')" class="btn-slim gray-btn">Info</button>
         </div>
 
         <div id="panel-gen" class="card p-4 space-y-3 hidden animate-pop">
+            <p class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Pilih Periode Generate:</p>
             <div class="flex gap-2">
                 <select id="bln-gen" class="input-dark flex-1 font-bold uppercase">
                     <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option>
@@ -82,16 +98,27 @@
                     <option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option>
                     <option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
                 </select>
-                <select id="thn-gen" class="input-dark w-24 font-bold"><option value="2025">2025</option></select>
+                <select id="thn-gen" class="input-dark w-24 font-bold">
+                    <option value="2025">2025</option><option value="2026">2026</option>
+                </select>
             </div>
-            <button onclick="prosesMassal()" class="w-full blue-btn py-3 rounded-xl text-[9px] font-black uppercase">Generate Massal</button>
+            <button onclick="prosesMassal()" class="w-full blue-btn py-3 rounded-xl text-[9px] uppercase font-black">Generate Massal (Semua)</button>
         </div>
 
         <div id="panel-tambah" class="card p-4 space-y-3 hidden animate-pop">
-            <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase font-bold text-[10px]">
-            <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark text-[10px]">
-            <button onclick="tambahWarga()" class="w-full gold-btn py-3 rounded-xl font-black text-[9px] uppercase">Simpan</button>
+            <input type="text" id="new-nama" placeholder="NAMA PELANGGAN" class="input-dark uppercase font-bold text-[10px]">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="new-nominal" placeholder="NOMINAL (RP)" class="input-dark text-[10px]">
+                <input type="number" id="new-aktivasi" placeholder="TANGGAL" class="input-dark text-[10px]">
+            </div>
+            <button onclick="tambahWarga()" class="w-full gold-btn py-3 rounded-xl font-black text-[9px] uppercase">Simpan Pelanggan</button>
         </div>
+
+        <div id="panel-rekap" class="card p-4 hidden animate-pop"><div id="list-rekap" class="space-y-2"></div></div>
+        <div id="panel-info" class="card p-3 hidden animate-pop">
+            <textarea id="papan-tulis" oninput="localStorage.setItem('plalangan_note', this.value)" placeholder="Catatan admin..." class="w-full h-64 bg-transparent text-[11px] outline-none leading-relaxed"></textarea>
+        </div>
+
     </div>
 
     <script>
@@ -99,10 +126,13 @@
         let dataTagihan = [], dataMaster = [], currentTab = 'tagihan';
 
         async function load() {
-            const res = await fetch(`${API_URL}?action=read`);
-            const json = await res.json();
-            dataTagihan = json.tagihan || []; dataMaster = json.master || [];
-            updateStats(); render();
+            try {
+                const res = await fetch(`${API_URL}?action=read`);
+                const json = await res.json();
+                dataTagihan = json.tagihan || []; dataMaster = json.master || [];
+                document.getElementById('papan-tulis').value = localStorage.getItem('plalangan_note') || "";
+                updateStats(); render();
+            } catch(e) { console.error(e); }
         }
 
         function switchTab(t) {
@@ -115,15 +145,16 @@
         function render() {
             const head = document.getElementById('head-tabel'), body = document.getElementById('body-tabel'), cari = document.getElementById('cari').value.toUpperCase();
             body.innerHTML = "";
+            
             if (currentTab === 'tagihan') {
                 head.innerHTML = `<th>Nama</th><th>Bulan</th><th>Rp</th><th>Aksi</th>`;
                 dataTagihan.filter(d => d.nama.toUpperCase().includes(cari)).forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
-                    body.innerHTML += `<tr class="${lunas ? 'baris-lunas' : 'baris-belum'} animate-pop">
+                    body.innerHTML += `<tr class="${!lunas ? 'baris-belum' : ''} animate-pop">
                         <td class="truncate uppercase font-bold">${h.nama}</td>
                         <td>${h.bulan}</td>
                         <td>${Number(h.jumlah).toLocaleString()}</td>
-                        <td><button onclick="bayar('${h.nama}','${h.bulan}')" class="btn-slim ${lunas ? 'gray-btn' : 'red-btn'} w-full">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
+                        <td><button onclick="bayar('${h.nama}','${h.bulan}')" class="btn-slim ${lunas ? 'gray-btn' : 'gold-btn'} w-full">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
                     </tr>`;
                 });
             } else {
@@ -139,39 +170,51 @@
             }
         }
 
+        // FUNGSI: GENERATE HANYA 1 NAMA
         async function genIndividu(nama, nominal) {
             const bln = document.getElementById('bln-gen').value;
-            if(!confirm(`Gen tagihan ${nama} - ${bln}?`)) return;
-            await fetch(`${API_URL}?action=generateIndividu&nama=${encodeURIComponent(nama)}&nominal=${nominal}&bulan=${bln}&tahun=2025`);
-            alert("✅ Berhasil!"); load();
+            const thn = document.getElementById('thn-gen').value;
+            if(!confirm(`Generate tagihan untuk ${nama} - ${bln}?`)) return;
+            
+            const btn = event.target; btn.innerText = "...";
+            try {
+                const res = await fetch(`${API_URL}?action=generateIndividu&nama=${encodeURIComponent(nama)}&nominal=${nominal}&bulan=${bln}&tahun=${thn}`);
+                const resJ = await res.json();
+                if(resJ.status === "success") { alert("✅ Berhasil!"); load(); }
+                else { alert("❌ Gagal: " + resJ.message); }
+            } catch(e) { alert("Error Koneksi"); }
+            btn.innerText = "GEN";
         }
 
         async function bayar(nama, bulan) {
-            if(!confirm("Lunas?")) return;
+            if(!confirm("Konfirmasi Lunas?")) return;
             await fetch(`${API_URL}?action=update&nama=${encodeURIComponent(nama)}&bulan=${bulan}`);
             load();
         }
 
         async function prosesMassal() {
             const bln = document.getElementById('bln-gen').value;
-            if(!confirm(`Generate massal ${bln}?`)) return;
-            await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=2025`);
+            const thn = document.getElementById('thn-gen').value;
+            if(!confirm(`GENERATE MASSAL untuk semua pelanggan di bulan ${bln}?`)) return;
+            await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=${thn}`);
             alert("Selesai!"); load();
         }
 
         async function tambahWarga() {
-            const n = document.getElementById('new-nama').value, r = document.getElementById('new-nominal').value;
-            await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${r}&aktivasi=1`);
-            alert("Berhasil!"); load();
+            const n = document.getElementById('new-nama').value, r = document.getElementById('new-nominal').value, a = document.getElementById('new-aktivasi').value;
+            if(!n || !r) return alert("Isi Nama & Nominal!");
+            await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${r}&aktivasi=${a}`);
+            alert("Berhasil!"); document.getElementById('new-nama').value = ""; load();
         }
 
         function toggleTabel() { document.getElementById('wrapper-tabel').classList.toggle('hidden-table'); }
-        function togglePanel(n) { ['tambah','gen','rekap','info'].forEach(p => { if(document.getElementById('panel-'+p)) document.getElementById('panel-'+p).classList.toggle('hidden', p!==n); }); }
+        function togglePanel(n) { ['tambah','gen','rekap','info'].forEach(p => document.getElementById('panel-'+p).classList.toggle('hidden', p!==n)); }
         function updateStats() {
             document.getElementById('stat-belum').innerText = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
             const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s,i) => s + Number(i.jumlah), 0);
             document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString();
         }
+
         window.onload = load;
     </script>
 </body>
