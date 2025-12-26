@@ -115,7 +115,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbztv7LtPOgybfM5MhEDp_J0s41uBQCnuyNJHzOFEhT-fuLn5U7d-Qk97VwCQ4Dryctn4g/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
         let dataTagihan = [], dataMaster = [], currentTab = 'tagihan', filterMode = 'all';
 
         function toggleTabel() {
@@ -159,8 +159,7 @@
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
-                dataTagihan = json.tagihan || []; 
-                dataMaster = json.master || [];
+                dataTagihan = json.tagihan || []; dataMaster = json.master || [];
                 document.getElementById('papan-tulis').value = localStorage.getItem('plalangan_note') || "";
                 updateStats(); render();
             } catch(e) { console.log(e); }
@@ -185,11 +184,12 @@
                 
                 filtered.forEach(h => {
                     const lunas = String(h.lunas).toLowerCase() == "true";
+                    
                     body.innerHTML += `<tr class="animate-pop ${lunas ? 'baris-lunas' : 'baris-belum'}">
                         <td class="font-bold uppercase text-[9px] truncate">${h.nama} ${!lunas ? '📌' : ''}</td>
                         <td class="text-center">${h.aktivasi || '0'}</td>
                         <td class="${lunas ? 'text-green-500' : 'text-red-500'} font-bold">Rp${Number(h.jumlah).toLocaleString()}</td>
-                        <td><button onclick="bayar('${h.nama}', '${h.bulan}')" class="w-full py-1 rounded text-[7px] font-black transition-all active:scale-75 ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white shadow-lg'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
+                        <td><button onclick="bayar('${h.id}')" class="w-full py-1 rounded text-[7px] font-black transition-all active:scale-75 ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white shadow-lg'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
                     </tr>`;
                 });
             } else {
@@ -199,42 +199,33 @@
                         <td class="font-bold uppercase text-[9px] truncate">${h.nama}</td>
                         <td class="text-center">${h.aktivasi || '0'}</td>
                         <td class="text-gray-400 font-bold">Rp${Number(h.nominal).toLocaleString()}</td>
-                        <td><button onclick="genSingle('${h.nama}', '${h.nominal}')" class="w-full bg-blue-500 text-white py-1 rounded text-[7px] font-black uppercase active:scale-75 transition-all shadow-md">Gen</button></td>
+                        <td><button onclick="genSingle('${h.nama}', '${h.aktivasi}', '${h.nominal}')" class="w-full bg-blue-500 text-white py-1 rounded text-[7px] font-black uppercase active:scale-75 transition-all shadow-md">Gen</button></td>
                     </tr>`;
                 });
             }
         }
 
-        async function genSingle(nama, nominal) {
-            const bln = document.getElementById('bln-gen').value;
-            const thn = document.getElementById('thn-gen').value;
+        async function genSingle(nama, akt, nominal) {
+            const bln = prompt("Generate untuk bulan apa?", "Januari");
+            if(!bln) return;
             if(confirm(`Buat tagihan ${nama} bulan ${bln}?`)) {
-                await fetch(`${API_URL}?action=generateIndividu&nama=${encodeURIComponent(nama)}&nominal=${nominal}&bulan=${bln}&tahun=${thn}`);
+                await fetch(`${API_URL}?action=generate&bulan=${bln}&tahun=2025&nama_tunggal=${encodeURIComponent(nama)}`);
                 alert("Berhasil!"); switchTab('tagihan'); load();
             }
         }
 
-        async function bayar(nama, bulan) { 
-            if(confirm("Konfirmasi Lunas?")) { 
-                await fetch(`${API_URL}?action=update&nama=${encodeURIComponent(nama)}&bulan=${bulan}`); 
-                load(); 
-            } 
-        }
-
+        async function bayar(id) { if(confirm("Konfirmasi Bayar?")) { await fetch(`${API_URL}?action=update&id=${id}`); load(); } }
         async function tambahPelanggan() { 
             const n = document.getElementById('new-nama').value, m = document.getElementById('new-nominal').value, a = document.getElementById('new-aktivasi').value;
             if(!n || !m) return alert("Isi Nama & Nominal!");
             await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
             alert("Berhasil!"); togglePanel(''); load();
         }
-
         async function prosesGenerate() {
             const b = document.getElementById('bln-gen').value, t = document.getElementById('thn-gen').value;
             if(confirm(`Generate massal bulan ${b} ${t}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); alert("Selesai!"); load(); }
         }
-
         function switchTab(t) { currentTab = t; document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan'); document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master'); render(); }
-        
         function autoSavePapan() {
             const teks = document.getElementById('papan-tulis').value;
             localStorage.setItem('plalangan_note', teks);
