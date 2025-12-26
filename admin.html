@@ -21,7 +21,7 @@
         .col-rp   { width: 25%; }
         .col-aksi { width: 15%; }
 
-        /* EFEK BARIS BELUM LUNAS - TETAP SESUAI KODE AWAL */
+        /* EFEK BARIS BELUM LUNAS */
         .baris-lunas { background: transparent; opacity: 0.8; }
         .baris-belum { background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; }
 
@@ -115,7 +115,6 @@
     </div>
 
     <script>
-        // LINK GS BARU SESUAI REQUEST
         const API_URL = "https://script.google.com/macros/s/AKfycbztv7LtPOgybfM5MhEDp_J0s41uBQCnuyNJHzOFEhT-fuLn5U7d-Qk97VwCQ4Dryctn4g/exec";
         let dataTagihan = [], dataMaster = [], currentTab = 'tagihan', filterMode = 'all';
 
@@ -160,7 +159,8 @@
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
-                dataTagihan = json.tagihan || []; dataMaster = json.master || [];
+                dataTagihan = json.tagihan || []; 
+                dataMaster = json.master || [];
                 document.getElementById('papan-tulis').value = localStorage.getItem('plalangan_note') || "";
                 updateStats(); render();
             } catch(e) { console.log(e); }
@@ -205,7 +205,6 @@
             }
         }
 
-        // FUNGSI GEN SINGLE: MENGAMBIL BULAN DARI PANEL GEN
         async function genSingle(nama, nominal) {
             const bln = document.getElementById('bln-gen').value;
             const thn = document.getElementById('thn-gen').value;
