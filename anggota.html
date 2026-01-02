@@ -8,73 +8,84 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
         
+        :root {
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        .light-mode {
+            --bg-color: #f3f4f6;
+            --text-main: #111827;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --input-bg: #ffffff;
+        }
+
         body { 
             font-family: 'Outfit', sans-serif; 
-            background: #050505; 
-            color: white; 
-            min-height: 100vh;
-            padding-top: 15vh; 
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            background: var(--bg-color); 
+            color: var(--text-main); 
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh; padding-top: 10vh; padding-left: 1.5rem; padding-right: 1.5rem;
         }
         
         .glass-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 2rem;
             padding: 1.5rem;
-            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .card-unpaid {
-            border-left: 5px solid #ef4444;
-            box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.3);
-        }
+        .card-unpaid { border-left: 5px solid #ef4444; }
+        .card-paid { border-left: 5px solid #d4af37; }
 
-        .card-paid {
-            border-left: 5px solid #d4af37;
-            box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.3);
-        }
-
-        .status-badge {
-            font-size: 8px;
-            font-weight: 900;
-            padding: 4px 12px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .status-badge { font-size: 8px; font-weight: 900; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px; }
 
         .shimmer {
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
-            transform: skewX(-25deg);
-            animation: move 3s infinite;
+            transform: skewX(-25deg); animation: move 3s infinite;
         }
         @keyframes move { 0% { left: -100%; } 100% { left: 200%; } }
-        
+
         .animate-pop { animation: pop 0.3s ease-out; }
         @keyframes pop { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        #theme-toggle {
+            position: fixed; top: 1.5rem; right: 1.5rem;
+            z-index: 100; width: 45px; height: 45px; border-radius: 50%;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s active;
+        }
+        #theme-toggle:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
+    <button id="theme-toggle" onclick="toggleTheme()">🌓</button>
+
     <div class="max-w-md mx-auto w-full space-y-6">
         
         <div class="text-center space-y-1">
-            <h1 class="text-2xl font-black text-[#d4af37] tracking-tight">PLALANGAN<span class="text-white">.NET</span></h1>
+            <h1 class="text-2xl font-black text-[#d4af37] tracking-tight">PLALANGAN<span class="text-white light-mode:text-gray-900">.NET</span></h1>
             <p class="text-[10px] uppercase tracking-[0.4em] text-gray-500 font-bold">Billing System</p>
         </div>
 
         <div class="relative">
             <input type="text" id="cari-nama" oninput="renderCards()" placeholder="Cek Nama Anda..." 
-            class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm font-bold outline-none focus:border-[#d4af37] transition-all uppercase text-center">
+            class="w-full bg-[var(--input-bg)] border border-[var(--border-color)] rounded-2xl py-4 px-6 text-sm font-bold outline-none focus:border-[#d4af37] transition-all uppercase text-center text-[var(--text-main)]">
         </div>
+
+        <div id="summary-container" class="space-y-4"></div>
 
         <div id="container-kartu" class="space-y-4">
             <div class="text-center py-10 opacity-20">
@@ -89,37 +100,72 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
         let dataTagihan = [];
 
+        // --- LOGIKA TEMA (LOCALSTORAGE) ---
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme-preference', isLight ? 'light' : 'dark');
+        }
+
+        function checkSavedTheme() {
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        }
+
+        // --- LOAD DATA ---
         async function loadData() {
             try {
                 const res = await fetch(`${API_URL}?action=read`);
                 const json = await res.json();
                 dataTagihan = json.tagihan || [];
-            } catch(e) { console.error("Gagal load data", e); }
+            } catch(e) { 
+                console.error("Gagal load data", e); 
+            }
         }
 
+        // --- RENDER KARTU ---
         function renderCards() {
             const container = document.getElementById('container-kartu');
+            const summaryContainer = document.getElementById('summary-container');
             const cari = document.getElementById('cari-nama').value.toUpperCase();
             
             if (cari.length < 3) {
                 container.innerHTML = `<div class="text-center py-10 opacity-20"><p class="text-[10px] uppercase font-bold tracking-widest">Ketik minimal 3 huruf nama Anda</p></div>`;
+                summaryContainer.innerHTML = "";
                 return;
             }
 
             const filtered = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
             container.innerHTML = "";
+            summaryContainer.innerHTML = "";
 
             if (filtered.length === 0) {
                 container.innerHTML = `<div class="text-center py-10 opacity-50"><p class="text-xs font-bold text-red-500">NAMA TIDAK DITEMUKAN</p></div>`;
                 return;
             }
 
+            let totalTunggakan = 0;
+            let countUnpaid = 0;
+
             filtered.forEach(d => {
                 const lunas = String(d.lunas).toLowerCase() == "true";
+                const nominal = Number(d.jumlah || d.nominal || 0);
+                
+                // Hitung kumulatif jika belum lunas
+                if (!lunas) {
+                    totalTunggakan += nominal;
+                    countUnpaid++;
+                }
+
                 const cardClass = lunas ? 'card-paid' : 'card-unpaid';
                 const statusText = lunas ? 'SUDAH LUNAS' : 'BELUM BAYAR';
                 const badgeColor = lunas ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400';
-                const waLink = `https://wa.me/6281936999919?text=Halo%20Admin%20Plalangan.net,%20saya%20mau%20konfirmasi%20pembayaran%20atas%20nama%20${encodeURIComponent(d.nama)}%20bulan%20${d.bulan}`;
+                
+                // Logika Tahun: Prioritas kolom bulan+tahun, jika tidak ada pakai bulan saja
+                let periodeTampil = (d.bulan && d.tahun) ? `${d.bulan} ${d.tahun}` : (d.bulan || "DATA PELANGGAN");
+                
+                const waLink = `https://wa.me/6281936999919?text=Halo%20Admin%20Plalangan.net,%20saya%20mau%20konfirmasi%20pembayaran%20atas%20nama%20${encodeURIComponent(d.nama)}%20periode%20${encodeURIComponent(periodeTampil)}`;
                 
                 const tglAktivasi = d.aktivasi || "-";
 
@@ -129,7 +175,7 @@
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-[8px] font-black text-gray-500 uppercase tracking-tighter">Nama Pelanggan</p>
-                            <h2 class="text-lg font-black uppercase text-white tracking-tight">${d.nama}</h2>
+                            <h2 class="text-lg font-black uppercase tracking-tight">${d.nama}</h2>
                         </div>
                         <span class="status-badge ${badgeColor}">${statusText}</span>
                     </div>
@@ -137,11 +183,11 @@
                     <div class="grid grid-cols-2 gap-y-6 gap-x-2 mt-6">
                         <div>
                             <p class="text-[8px] font-black text-gray-500 uppercase">Periode Tagihan</p>
-                            <p class="text-xs font-bold">${d.bulan} 2025</p>
+                            <p class="text-xs font-bold uppercase">${periodeTampil}</p>
                         </div>
                         <div class="text-right">
                             <p class="text-[8px] font-black text-gray-500 uppercase">Jumlah Tagihan</p>
-                            <p class="text-sm font-black ${lunas ? 'text-[#d4af37]' : 'text-red-500'}">Rp ${Number(d.jumlah).toLocaleString('id-ID')}</p>
+                            <p class="text-sm font-black ${lunas ? 'text-[#d4af37]' : 'text-red-500'}">Rp ${nominal.toLocaleString('id-ID')}</p>
                         </div>
                         <div class="col-span-2 pt-2 border-t border-white/5">
                             <p class="text-[8px] font-black text-gray-500 uppercase text-center">Tanggal  -  Aktivasi</p>
@@ -161,9 +207,22 @@
                 </div>
                 `;
             });
+
+            // Tampilkan Ringkasan jika ada tunggakan
+            if (countUnpaid > 0) {
+                summaryContainer.innerHTML = `
+                <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-5 animate-pop">
+                    <p class="text-[10px] font-black text-red-500 uppercase text-center mb-1">Total Tunggakan (${countUnpaid} Periode)</p>
+                    <p class="text-2xl font-black text-center text-red-500">Rp ${totalTunggakan.toLocaleString('id-ID')}</p>
+                </div>`;
+            }
         }
 
-        window.onload = loadData;
+        // INISIALISASI
+        window.onload = () => {
+            checkSavedTheme();
+            loadData();
+        };
     </script>
 </body>
 </html>
