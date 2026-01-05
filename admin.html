@@ -136,7 +136,7 @@
                     <input type="text" id="exp-nama" placeholder="NAMA BARANG" class="input-premium uppercase">
                     <input type="number" id="exp-jumlah" placeholder="JUMLAH (RP)" class="input-premium">
                     <input type="date" id="exp-tgl" class="input-premium uppercase">
-                    <button onclick="simpanPengeluaran()" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
+                    <button onclick="simpanPengeluaran(event)" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
                 </div>
                 <div id="tabel-keluar-render"></div>
             </div>
@@ -282,36 +282,44 @@ function renderTabelKeluar() {
         container.innerHTML = html + `</tbody></table></div><div class="mt-4 p-4 bg-red-500/10 rounded-xl text-right font-black text-red-500 uppercase">Total: Rp${total.toLocaleString()}</div>`;
     }
 
-async function simpanPengeluaran() {
-        const ket = document.getElementById('exp-nama').value; 
-        const jml = document.getElementById('exp-jumlah').value; 
-        const tgl = document.getElementById('exp-tgl').value; 
-        
-        if(!ket || !jml || !tgl) return alert("Lengkapi data pengeluaran!");
+async function simpanPengeluaran(event) { // Tambahkan parameter event
+    const ket = document.getElementById('exp-nama').value; 
+    const jml = document.getElementById('exp-jumlah').value; 
+    const tgl = document.getElementById('exp-tgl').value; 
+    
+    if(!ket || !jml || !tgl) return alert("Lengkapi data pengeluaran!");
 
-        const btn = event.currentTarget || event.target;
-        const originalText = btn.innerText;
+    // Ambil tombol dengan aman agar tidak gagal koneksi
+    const btn = event ? (event.currentTarget || event.target) : null;
+    if(btn) {
         btn.innerText = "MENGIRIM...";
         btn.disabled = true;
+    }
 
-        try {
-            // Mengirim ke Script GS Anda (action: tambah_pengeluaran)
-            await fetch(`${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(ket)}&jml=${jml}&tgl=${tgl}`);
-            
+    try {
+        const url = `${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(ket)}&jml=${jml}&tgl=${tgl}`;
+        const response = await fetch(url);
+        const result = await response.text();
+        
+        if (result.includes("Sukses")) {
             document.getElementById('exp-nama').value = ""; 
             document.getElementById('exp-jumlah').value = "";
             
             await load(); 
             renderTabelKeluar();
             alert("Berhasil dicatat ke Sheets!");
-        } catch(e) { 
-            alert("Gagal koneksi database!"); 
-        } finally {
-            btn.innerText = originalText;
+        } else {
+            alert("Server merespon: " + result);
+        }
+    } catch(e) { 
+        alert("Gagal koneksi database! Pastikan URL API benar dan sudah di-Deploy sebagai 'Anyone'."); 
+    } finally {
+        if(btn) {
+            btn.innerText = "TAMBAH";
             btn.disabled = false;
         }
     }
-
+}
     function liveSearch() {
         const val = document.getElementById('main-search').value.toUpperCase();
         const area = document.getElementById('search-results-area');
