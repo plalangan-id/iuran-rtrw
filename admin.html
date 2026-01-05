@@ -3,29 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PLALANGAN.NET - FINAL BERSID</title>
+    <title>PLALANGAN.NET - EXECUTIVE ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f1115; color: #ffffff; }
-        .stat-box { background: linear-gradient(145deg, #1a1d24, #14161b); border-radius: 24px; padding: 20px; text-align: center; }
-        .input-premium { background: #252932; border-radius: 18px; padding: 18px; width: 100%; color: white; outline: none; margin-bottom: 12px; font-weight: 700; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(10, 12, 16, 0.98); backdrop-filter: blur(25px); display: none; flex-direction: column; z-index: 1000; padding: 20px; }
-        .modal-content-scroll { width: 100%; max-width: 600px; margin: 0 auto; flex-grow: 1; overflow-y: auto; padding-bottom: 100px; }
-        .btn-back { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; padding: 16px 50px; border-radius: 50px; font-weight: 800; z-index: 1100; text-transform: uppercase; }
-        .icon-menu { @apply flex flex-col items-center justify-center; background: transparent; border: none; }
-        .icon-menu span { font-size: 45px; margin-bottom: 8px; }
-        .icon-menu p { font-size: 9px; font-weight: 800; color: #64748b; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #0f1115;
+            color: #ffffff; 
+            min-height: 100vh;
+        }
+
+        /* Halaman Login */
+        #login-page {
+            position: fixed; inset: 0; background: #0f1115;
+            z-index: 2000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(145deg, #1a1d24, #14161b);
+            border-radius: 24px; padding: 20px; text-align: center;
+        }
+
+        .icon-menu {
+            @apply flex flex-col items-center justify-center transition-all duration-300;
+            background: transparent; padding: 10px; border: none;
+        }
+        .icon-menu:active { transform: scale(0.85); opacity: 0.6; }
+        .icon-menu span { 
+            font-size: 50px; margin-bottom: 8px;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+        }
+        .icon-menu p { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: #64748b; }
+
+        .search-container {
+            background: #1a1d24; border-radius: 24px; padding: 2px 25px;
+            width: 100%; display: flex; align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(10, 12, 16, 0.98); 
+            backdrop-filter: blur(25px); display: none; flex-direction: column;
+            z-index: 1000; padding: 20px;
+        }
+        
+        .modal-content-scroll {
+            width: 100%; max-width: 600px; margin: 0 auto;
+            flex-grow: 1; overflow-y: auto; padding-bottom: 100px;
+        }
+
+        .btn-back {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #ef4444; color: white; padding: 16px 50px;
+            border-radius: 50px; font-weight: 800; z-index: 1100; min-width: 100px;
+            text-transform: uppercase;
+        }
+
+        .input-premium {
+            background: #252932; border-radius: 18px; padding: 18px;
+            width: 100%; color: white; outline: none; margin-bottom: 12px; font-weight: 700;
+        }
+
         .hidden-el { display: none; }
-        table { width: 100%; }
+        ::-webkit-scrollbar { display: none; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         td { padding: 15px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
     </style>
 </head>
 <body class="p-6">
 
-    <div id="login-page" class="fixed inset-0 bg-[#0f1115] z-[2000] flex flex-col justify-center items-center p-8">
-        <h1 class="text-3xl font-black mb-2 uppercase">Admin Login</h1>
-        <p class="text-[10px] font-bold text-gray-500 tracking-[0.3em] mb-10">PLALANGAN.NET</p>
+    <div id="login-page">
+        <h1 class="text-3xl font-black tracking-tighter uppercase mb-2">Admin Login</h1>
+        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-10">Plalangan.net System</p>
         <div class="w-full max-w-xs">
             <input type="text" id="user" placeholder="USERNAME" class="input-premium text-center">
             <input type="password" id="pass" placeholder="PASSWORD" class="input-premium text-center">
@@ -35,84 +89,132 @@
 
     <div id="main-app" class="hidden-el">
         <div class="text-center mb-8 mt-4">
-            <h1 class="text-4xl font-black uppercase">PLALANGAN.NET</h1>
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.4em]">Dashboard Admin</p>
+            <h1 class="text-4xl font-black tracking-tighter uppercase">PLALANGAN.NET</h1>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.4em]">Billing System Internet</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-10">
-            <div class="stat-box"><p class="text-[9px] font-bold text-red-500 uppercase">BELUM BAYAR</p><h2 id="stat-belum" class="text-3xl font-black text-red-500">0</h2></div>
-            <div class="stat-box"><p class="text-[9px] font-bold text-green-500 uppercase">TOTAL MASUK</p><h2 id="stat-uang" class="text-2xl font-black text-green-400">Rp 0</h2></div>
+            <div class="stat-box">
+                <p class="text-[9px] font-bold text-red-500 uppercase mb-1">BELUM BAYAR</p>
+                <h2 id="stat-belum" class="text-3xl font-black text-red-500">0</h2>
+            </div>
+            <div class="stat-box">
+                <p class="text-[9px] font-bold text-green-500 uppercase mb-1">Total Masuk</p>
+                <h2 id="stat-uang" class="text-2xl font-black text-green-400">Rp 0</h2>
+            </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-y-10 mb-10">
+        <div class="grid grid-cols-3 gap-y-12 mb-12">
             <button onclick="openM('tagihan', 'all')" class="icon-menu"><span>🧾</span><p>TAGIHAN</p></button>
             <button onclick="openM('tagihan', 'belum')" class="icon-menu"><span>⏳</span><p>BELUM</p></button>
             <button onclick="openM('tagihan', 'lunas')" class="icon-menu"><span>✅</span><p>LUNAS</p></button>
             <button onclick="openM('master')" class="icon-menu"><span>👥</span><p>MEMBER</p></button>
             <button onclick="openM('tambah')" class="icon-menu"><span>➕</span><p>BARU</p></button>
+            <button onclick="openM('gen')" class="icon-menu"><span>⚡</span><p>BUAT</p></button>
             <button onclick="openM('keluar')" class="icon-menu"><span>💸</span><p>PENGELUARAN</p></button>
+            <button onclick="openM('rekap')" class="icon-menu"><span>📈</span><p>REKAP</p></button>
             <button onclick="logout()" class="icon-menu"><span>🚪</span><p>LOGOUT</p></button>
         </div>
+
+        <div class="search-container mb-4">
+            <input type="text" id="main-search" oninput="liveSearch()" placeholder="CARI NAMA..." class="bg-transparent h-16 outline-none font-bold text-sm w-full uppercase">
+            <span class="text-xl">🔍</span>
+        </div>
+        <div id="search-results-area" class="mt-4"></div>
     </div>
 
     <div id="modal-container" class="modal-overlay">
         <div class="modal-content-scroll">
-            <div id="m-list" class="hidden-el"><h3 id="modal-title" class="text-2xl font-black mb-8 uppercase text-center">Daftar</h3><div id="list-render"></div></div>
-            
+            <div id="m-list" class="hidden-el">
+                <h3 id="modal-title" class="text-2xl font-black mb-8 uppercase text-center tracking-tighter">Daftar</h3>
+                <div id="list-render"></div>
+            </div>
+
             <div id="m-keluar" class="hidden-el pt-6">
-                <h3 class="text-2xl font-black mb-6 uppercase text-center">Catat Pengeluaran</h3>
-                <div class="bg-[#1a1d24] p-6 rounded-[28px] mb-8">
+                <h3 class="text-2xl font-black mb-8 uppercase text-center">Catat Pengeluaran</h3>
+                <div class="bg-[#1a1d24] p-6 rounded-[28px] mb-8 border border-white/5">
                     <input type="text" id="exp-nama" placeholder="NAMA BARANG" class="input-premium uppercase">
                     <input type="number" id="exp-jumlah" placeholder="JUMLAH (RP)" class="input-premium">
-                    <input type="date" id="exp-tgl" class="input-premium">
-                    <button onclick="simpanPengeluaran()" class="w-full bg-orange-600 p-5 rounded-2xl font-black">SIMPAN</button>
+                    <input type="date" id="exp-tgl" class="input-premium uppercase">
+                    <button onclick="simpanPengeluaran()" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
                 </div>
                 <div id="tabel-keluar-render"></div>
             </div>
 
-            <div id="m-tambah" class="hidden-el pt-6">
-                <h3 class="text-2xl font-black mb-8 uppercase text-center">Member Baru</h3>
+            <div id="m-tambah" class="hidden-el pt-6 text-center">
+                <h3 class="text-2xl font-black mb-8 uppercase">Registrasi Member</h3>
                 <input type="text" id="new-nama" placeholder="NAMA LENGKAP" class="input-premium uppercase">
                 <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-premium">
                 <input type="number" id="new-aktivasi" placeholder="TGL TAGIHAN" class="input-premium">
                 <button onclick="tambahPelanggan()" class="w-full bg-blue-600 p-5 rounded-2xl font-black">SIMPAN</button>
+            </div>
+            
+            <div id="m-rekap" class="hidden-el pt-10"><div id="list-rekap" class="space-y-3"></div></div>
+            
+            <div id="m-gen" class="hidden-el pt-10 text-center">
+                <h3 class="text-2xl font-black mb-6 uppercase">Generate Tagihan</h3>
+                <select id="bln-gen" class="input-premium text-center">
+                    <option value="Januari">JANUARI</option><option value="Februari">FEBRUARI</option>
+                    <option value="Maret">MARET</option><option value="April">APRIL</option>
+                    <option value="Mei">MEI</option><option value="Juni">JUNI</option>
+                </select>
+                <button onclick="prosesGenerate()" class="w-full bg-emerald-600 p-5 rounded-2xl font-black">PROSES</button>
             </div>
         </div>
         <button onclick="closeM()" class="btn-back">KEMBALI</button>
     </div>
 
 <script>
-    // GANTI DENGAN URL DEPLOY ANDA
     const API_URL = "https://script.google.com/macros/s/AKfycbxlKNSqgSPu43AGlBPKfuxf8JwFbyXx9-Nr8Ht-WF1KS9-kOS2Wu2jokmCt5xx13-BGVg/exec";
-    
     let dataTagihan = [], dataMaster = [], dataKeluar = [];
 
-    window.onload = function() { if (localStorage.getItem('plalangan_isLoggedIn') === 'true') tampilkanDashboard(); };
+    // CEK STATUS LOGIN SAAT HALAMAN DIBUKA (Sangat Sat-Set)
+    window.onload = function() {
+        const statusLogin = localStorage.getItem('plalangan_isLoggedIn');
+        if (statusLogin === 'true') {
+            tampilkanDashboard();
+        }
+    };
 
     function login() {
         const u = document.getElementById('user').value.trim().toLowerCase();
         const p = document.getElementById('pass').value.trim();
-        if(u === "admin" && p === "1234") { localStorage.setItem('plalangan_isLoggedIn', 'true'); tampilkanDashboard(); }
-        else { alert("Salah!"); }
+        
+        // Ganti username & password di sini jika perlu
+        if(u === "admin" && p === "1234") { 
+            localStorage.setItem('plalangan_isLoggedIn', 'true'); // Simpan status login permanen
+            tampilkanDashboard();
+        } else { 
+            alert("Username atau Password Salah!"); 
+        }
     }
 
-    function tampilkanDashboard() { 
-        document.getElementById('login-page').style.display = 'none'; 
-        document.getElementById('main-app').classList.remove('hidden-el'); 
-        load(); 
+    function tampilkanDashboard() {
+        document.getElementById('login-page').style.display = 'none';
+        const mainApp = document.getElementById('main-app');
+        mainApp.classList.remove('hidden-el');
+        mainApp.style.display = 'block'; 
+        load(); // Ambil data dari database
     }
 
-    function logout() { localStorage.removeItem('plalangan_isLoggedIn'); location.reload(); }
+    function logout() { 
+        if(confirm("Apakah Anda yakin ingin Logout dan mengunci aplikasi?")) {
+            localStorage.removeItem('plalangan_isLoggedIn'); // Hapus status login
+            location.reload(); // Balik ke halaman login awal
+        }
+    }
 
-    async function load() {
+    // --- FUNGSI LOAD DATA DATABASE ---
+async function load() {
         try {
             const res = await fetch(`${API_URL}?action=read`);
             const json = await res.json();
             dataTagihan = json.tagihan || []; 
-            dataMaster = json.master || []; 
-            dataKeluar = json.pengeluaran || [];
+            dataMaster = json.master || [];
+            // Sekarang mengambil data dari Sheets, bukan localStorage
+            dataKeluar = json.pengeluaran || []; 
             updateStats();
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error("Gagal muat data:", e); }
     }
 
     function updateStats() {
@@ -122,22 +224,31 @@
         document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
     }
 
+    // --- MANAJEMEN MODAL & TABEL ---
     function openM(type, filter = 'all') {
         document.getElementById('modal-container').style.display = 'flex';
-        ['m-list', 'm-tambah', 'm-keluar'].forEach(id => document.getElementById(id).classList.add('hidden-el'));
-        if(type === 'tagihan' || type === 'master') { 
-            document.getElementById('m-list').classList.remove('hidden-el'); 
-            renderToModal(type, filter); 
+        ['m-list', 'm-tambah', 'm-gen', 'm-rekap', 'm-keluar'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.add('hidden-el');
+        });
+
+        if(type === 'tagihan' || type === 'master') {
+            document.getElementById('m-list').classList.remove('hidden-el');
+            document.getElementById('modal-title').innerText = type === 'master' ? 'DATABASE MEMBER' : filter.toUpperCase();
+            renderToModal(type, filter);
+        } else if(type === 'keluar') {
+            document.getElementById('m-keluar').classList.remove('hidden-el');
+            renderTabelKeluar();
+        } else {
+            const menuEl = document.getElementById('m-' + type);
+            if(menuEl) menuEl.classList.remove('hidden-el');
+            if(type === 'rekap') hitungRekap();
         }
-        else if(type === 'keluar') { 
-            document.getElementById('m-keluar').classList.remove('hidden-el'); 
-            renderTabelKeluar(); 
-        }
-        else { document.getElementById('m-' + type).classList.remove('hidden-el'); }
     }
 
     function renderToModal(type, filter) {
-        const container = document.getElementById('list-render'); container.innerHTML = "";
+        const container = document.getElementById('list-render'); 
+        container.innerHTML = "";
         let source = (type === 'tagihan') ? dataTagihan : dataMaster;
         
         if (type === 'tagihan') {
@@ -145,55 +256,108 @@
             if (filter === 'lunas') source = source.filter(d => String(d.lunas).toLowerCase() == "true");
         }
 
-        let html = `<table><tbody>`;
+        let tableHTML = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">NAMA</th><th class="text-left">AKT</th><th class="text-left">BULAN</th><th class="text-right">STATUS</th></tr></thead><tbody class="divide-y divide-white/5">`;
+        
         source.forEach(h => {
             const isLunas = String(h.lunas).toLowerCase() == "true";
-            // PROTEKSI NAN:
-            const val = Number(h.jumlah || h.nominal || 0);
-            
-            html += `<tr onclick="if(!${isLunas} && '${type}'=='tagihan') bayar('${h.id}')">
-                <td>
-                    <p class="text-xs font-black uppercase text-white">${h.nama || 'TANPA NAMA'}</p>
-                    <p class="text-[10px] text-blue-400 font-bold">Rp${val.toLocaleString('id-ID')}</p>
-                </td>
-                <td class="text-right">
-                    <span class="px-2 py-1 rounded text-[8px] font-black uppercase ${isLunas ? 'bg-green-500/20 text-green-500' : 'bg-red-600 text-white'}">
-                        ${isLunas ? 'Lunas' : 'Bayar'}
-                    </span>
-                </td>
-            </tr>`;
+            const rowStyle = (!isLunas && type === 'tagihan') ? 'border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05);' : 'border-left: 4px solid transparent;';
+            tableHTML += `<tr style="${rowStyle}" onclick="if(!${isLunas} && '${type}'=='tagihan') bayar('${h.id}')">
+                <td class="py-4 px-2"><p class="text-xs font-black uppercase text-white">${h.nama}</p><p class="text-[9px] text-blue-500 font-bold uppercase">Rp${Number(h.jumlah || h.nominal).toLocaleString()}</p></td>
+                <td class="text-xs font-bold text-gray-500">${h.aktivasi || "-"}</td>
+                <td class="text-xs font-bold text-gray-500 uppercase">${h.bulan || '-'}</td>
+                <td class="text-right"><span class="px-2 py-1 rounded-md text-[8px] font-black uppercase ${isLunas ? 'bg-green-500/10 text-green-500' : 'bg-red-600 text-white'}">${isLunas ? 'Lunas' : 'Bayar'}</span></td></tr>`;
         });
-        container.innerHTML = html + `</tbody></table>`;
+        container.innerHTML = tableHTML + `</tbody></table></div>`;
     }
 
-    function renderTabelKeluar() {
+function renderTabelKeluar() {
         const container = document.getElementById('tabel-keluar-render');
-        let total = 0, html = `<table><tbody>`;
+        let total = 0, html = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">KETERANGAN</th><th class="text-right">JUMLAH</th></tr></thead><tbody>`;
+        
         dataKeluar.forEach(item => {
             total += Number(item.jumlah);
-            html += `<tr><td><p class="text-xs font-bold uppercase text-white">${item.keterangan}</p><p class="text-[8px] text-gray-500">${item.tanggal}</p></td><td class="text-right text-red-400 font-bold text-xs">-Rp${Number(item.jumlah).toLocaleString()}</td></tr>`;
+            // Menampilkan 'keterangan' dan 'tanggal' sesuai struktur GS Anda
+            html += `<tr><td class="py-4 font-bold text-xs uppercase text-white">${item.keterangan}<br><span class="text-[8px] text-gray-500">${item.tanggal}</span></td><td class="text-right font-black text-red-400 text-xs">-Rp${Number(item.jumlah).toLocaleString()}</td></tr>`;
         });
-        container.innerHTML = html + `</tbody></table><div class="mt-4 p-4 bg-red-500/10 rounded-xl text-right font-black text-red-500 uppercase">Total: Rp${total.toLocaleString()}</div>`;
+        container.innerHTML = html + `</tbody></table></div><div class="mt-4 p-4 bg-red-500/10 rounded-xl text-right font-black text-red-500 uppercase">Total: Rp${total.toLocaleString()}</div>`;
     }
 
-    async function simpanPengeluaran() {
-        const k = document.getElementById('exp-nama').value;
-        const j = document.getElementById('exp-jumlah').value;
-        const t = document.getElementById('exp-tgl').value;
-        if(!k || !j || !t) return alert("Isi semua!");
-        await fetch(`${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(k)}&jml=${j}&tgl=${t}`);
-        alert("Berhasil!"); closeM(); load();
+async function simpanPengeluaran() {
+        const ket = document.getElementById('exp-nama').value; 
+        const jml = document.getElementById('exp-jumlah').value; 
+        const tgl = document.getElementById('exp-tgl').value; 
+        
+        if(!ket || !jml || !tgl) return alert("Lengkapi data pengeluaran!");
+
+        const btn = event.currentTarget || event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "MENGIRIM...";
+        btn.disabled = true;
+
+        try {
+            // Mengirim ke Script GS Anda (action: tambah_pengeluaran)
+            await fetch(`${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(ket)}&jml=${jml}&tgl=${tgl}`);
+            
+            document.getElementById('exp-nama').value = ""; 
+            document.getElementById('exp-jumlah').value = "";
+            
+            await load(); 
+            renderTabelKeluar();
+            alert("Berhasil dicatat ke Sheets!");
+        } catch(e) { 
+            alert("Gagal koneksi database!"); 
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
 
-    async function bayar(id) { if(confirm("Lunas?")) { await fetch(`${API_URL}?action=update&id=${id}`); await load(); closeM(); } }
+    function liveSearch() {
+        const val = document.getElementById('main-search').value.toUpperCase();
+        const area = document.getElementById('search-results-area');
+        if(val === "") { area.innerHTML = ""; return; }
+        const filtered = dataTagihan.filter(d => d.nama.toUpperCase().includes(val));
+        area.innerHTML = "";
+        filtered.forEach(h => {
+            const isLunas = String(h.lunas).toLowerCase() == "true";
+            area.innerHTML += `<div class="p-4 bg-[#1a1d24] rounded-2xl mb-2 flex justify-between items-center border-l-4 ${isLunas ? 'border-green-500' : 'border-red-500'}" onclick="if(!${isLunas}) bayar('${h.id}')"><div><p class="text-sm font-black uppercase text-white">${h.nama}</p><p class="text-[9px] font-bold text-gray-500 uppercase">${h.bulan}</p></div><p class="font-black ${isLunas ? 'text-green-500' : 'text-white'}">Rp${Number(h.jumlah).toLocaleString()}</p></div>`;
+        });
+    }
+
     function closeM() { document.getElementById('modal-container').style.display = 'none'; }
+    
+    async function bayar(id) { 
+        if(confirm("Tandai Lunas?")) { 
+            await fetch(`${API_URL}?action=update&id=${id}`); 
+            await load(); 
+            closeM(); 
+        } 
+    }
+
+    function hitungRekap() {
+        const list = document.getElementById('list-rekap'); list.innerHTML = "";
+        let rekapBulan = {};
+        dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").forEach(d => { rekapBulan[d.bulan] = (rekapBulan[d.bulan] || 0) + Number(d.jumlah); });
+        Object.keys(rekapBulan).forEach(bln => { 
+            list.innerHTML += `<div class="flex justify-between p-5 bg-[#1a1d24] rounded-2xl mb-2 border border-white/5"><span class="font-bold uppercase text-gray-400">${bln}</span><span class="font-black text-green-400 uppercase">Rp ${rekapBulan[bln].toLocaleString()}</span></div>`; 
+        });
+    }
 
     async function tambahPelanggan() {
         const n = document.getElementById('new-nama').value;
         const m = document.getElementById('new-nominal').value;
         const a = document.getElementById('new-aktivasi').value;
+        if(!n || !m) return;
         await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
-        alert("Berhasil!"); closeM(); load();
+        closeM(); await load();
+    }
+
+    async function prosesGenerate() {
+        const b = document.getElementById('bln-gen').value;
+        if(confirm(`Buat Tagihan Bulan ${b}?`)) { 
+            await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=2026`); 
+            closeM(); await load(); 
+        }
     }
 </script>
 </body>
