@@ -2,363 +2,240 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PLALANGAN.NET - EXECUTIVE ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLALANGAN.NET ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: #0a0a0c; color: white; min-height: 100vh; }
+        .card { background: #1a1a1c; border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .tab-active { border-bottom: 2px solid #d4af37; color: #d4af37; transition: all 0.3s; }
+        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; font-size: 11px; outline: none; color: white; width: 100%; }
         
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #0f1115;
-            color: #ffffff; 
-            min-height: 100vh;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; table-layout: fixed; }
+        th { text-align: left; padding: 10px 8px; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* Halaman Login */
-        #login-page {
-            position: fixed; inset: 0; background: #0f1115;
-            z-index: 2000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 30px;
-        }
+        .col-nama { width: 45%; }
+        .col-akt  { width: 15%; }
+        .col-rp   { width: 25%; }
+        .col-aksi { width: 15%; }
 
-        .stat-box {
-            background: linear-gradient(145deg, #1a1d24, #14161b);
-            border-radius: 24px; padding: 20px; text-align: center;
-        }
+        .baris-lunas { background: transparent; opacity: 0.8; }
+        .baris-belum { background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; }
 
-        .icon-menu {
-            @apply flex flex-col items-center justify-center transition-all duration-300;
-            background: transparent; padding: 10px; border: none;
-        }
-        .icon-menu:active { transform: scale(0.85); opacity: 0.6; }
-        .icon-menu span { 
-            font-size: 50px; margin-bottom: 8px;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
-        }
-        .icon-menu p { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: #64748b; }
-
-        .search-container {
-            background: #1a1d24; border-radius: 24px; padding: 2px 25px;
-            width: 100%; display: flex; align-items: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(10, 12, 16, 0.98); 
-            backdrop-filter: blur(25px); display: none; flex-direction: column;
-            z-index: 1000; padding: 20px;
-        }
+        .btn-slim { padding: 8px 4px; border-radius: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; transition: all 0.1s; }
+        .btn-slim:active { transform: scale(0.92); }
+        .gold-btn { background: linear-gradient(135deg, #f5d173, #d4af37); color: black; }
+        .blue-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .gray-btn { background: #262629; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .purple-btn { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; }
         
-        .modal-content-scroll {
-            width: 100%; max-width: 600px; margin: 0 auto;
-            flex-grow: 1; overflow-y: auto; padding-bottom: 100px;
-        }
-
-        .btn-back {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: #ef4444; color: white; padding: 16px 50px;
-            border-radius: 50px; font-weight: 800; z-index: 1100; min-width: 100px;
-            text-transform: uppercase;
-        }
-
-        .input-premium {
-            background: #252932; border-radius: 18px; padding: 18px;
-            width: 100%; color: white; outline: none; margin-bottom: 12px; font-weight: 700;
-        }
-
-        .hidden-el { display: none; }
-        ::-webkit-scrollbar { display: none; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        td { padding: 15px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .filter-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .filter-active { border: 2px solid white; transform: scale(1.1); }
+        .hidden-table { display: none; }
+        .animate-pop { animation: pop 0.2s ease-out; }
+        @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
-<body class="p-6">
-
-    <div id="login-page">
-        <h1 class="text-3xl font-black tracking-tighter uppercase mb-2">Admin Login</h1>
-        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-10">Plalangan.net System</p>
-        <div class="w-full max-w-xs">
-            <input type="text" id="user" placeholder="USERNAME" class="input-premium text-center">
-            <input type="password" id="pass" placeholder="PASSWORD" class="input-premium text-center">
-            <button onclick="login()" class="w-full bg-white text-black p-5 rounded-2xl font-black mt-4 uppercase">Masuk</button>
-        </div>
-    </div>
-
-    <div id="main-app" class="hidden-el">
-        <div class="text-center mb-8 mt-4">
-            <h1 class="text-4xl font-black tracking-tighter uppercase">PLALANGAN.NET</h1>
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.4em]">Billing System Internet</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-10">
-            <div class="stat-box">
-                <p class="text-[9px] font-bold text-red-500 uppercase mb-1">BELUM BAYAR</p>
-                <h2 id="stat-belum" class="text-3xl font-black text-red-500">0</h2>
+<body class="p-4">
+    <div class="max-w-md mx-auto space-y-3">
+        
+        <div class="flex items-end justify-between pb-3 border-b border-white/5">
+            <div class="pl-1">
+                <h1 class="text-base font-black text-[#d4af37] leading-none">PLALANGAN <span class="text-white">.NET</span></h1>
+                <p class="text-[7px] tracking-[0.25em] text-gray-500 font-bold uppercase mt-1">billing system</p>
             </div>
-            <div class="stat-box">
-                <p class="text-[9px] font-bold text-green-500 uppercase mb-1">Total Masuk</p>
-                <h2 id="stat-uang" class="text-2xl font-black text-green-400">Rp 0</h2>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-y-12 mb-12">
-            <button onclick="openM('tagihan', 'all')" class="icon-menu"><span>🧾</span><p>TAGIHAN</p></button>
-            <button onclick="openM('tagihan', 'belum')" class="icon-menu"><span>⏳</span><p>BELUM</p></button>
-            <button onclick="openM('tagihan', 'lunas')" class="icon-menu"><span>✅</span><p>LUNAS</p></button>
-            <button onclick="openM('master')" class="icon-menu"><span>👥</span><p>MEMBER</p></button>
-            <button onclick="openM('tambah')" class="icon-menu"><span>➕</span><p>BARU</p></button>
-            <button onclick="openM('gen')" class="icon-menu"><span>⚡</span><p>BUAT</p></button>
-            <button onclick="openM('keluar')" class="icon-menu"><span>💸</span><p>PENGELUARAN</p></button>
-            <button onclick="openM('rekap')" class="icon-menu"><span>📈</span><p>REKAP</p></button>
-            <button onclick="logout()" class="icon-menu"><span>🚪</span><p>LOGOUT</p></button>
-        </div>
-
-        <div class="search-container mb-4">
-            <input type="text" id="main-search" oninput="liveSearch()" placeholder="CARI NAMA..." class="bg-transparent h-16 outline-none font-bold text-sm w-full uppercase">
-            <span class="text-xl">🔍</span>
-        </div>
-        <div id="search-results-area" class="mt-4"></div>
-    </div>
-
-    <div id="modal-container" class="modal-overlay">
-        <div class="modal-content-scroll">
-            <div id="m-list" class="hidden-el">
-                <h3 id="modal-title" class="text-2xl font-black mb-8 uppercase text-center tracking-tighter">Daftar</h3>
-                <div id="list-render"></div>
-            </div>
-
-            <div id="m-keluar" class="hidden-el pt-6">
-                <h3 class="text-2xl font-black mb-8 uppercase text-center">Catat Pengeluaran</h3>
-                <div class="bg-[#1a1d24] p-6 rounded-[28px] mb-8 border border-white/5">
-                    <input type="text" id="exp-nama" placeholder="NAMA BARANG" class="input-premium uppercase">
-                    <input type="number" id="exp-jumlah" placeholder="JUMLAH (RP)" class="input-premium">
-                    <input type="date" id="exp-tgl" class="input-premium uppercase">
-                    <button onclick="simpanPengeluaran()" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
+            <div class="flex gap-4 items-center">
+                <div class="text-right border-r border-white/10 pr-4">
+                    <p class="text-[6px] text-gray-500 font-bold uppercase mb-0.5">BELUM</p>
+                    <h3 id="stat-belum" class="text-xs font-black text-red-500 leading-none">0</h3>
                 </div>
-                <div id="tabel-keluar-render"></div>
-            </div>
-
-            <div id="m-tambah" class="hidden-el pt-6 text-center">
-                <h3 class="text-2xl font-black mb-8 uppercase">Registrasi Member</h3>
-                <input type="text" id="new-nama" placeholder="NAMA LENGKAP" class="input-premium uppercase">
-                <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-premium">
-                <input type="number" id="new-aktivasi" placeholder="TGL TAGIHAN" class="input-premium">
-                <button onclick="tambahPelanggan()" class="w-full bg-blue-600 p-5 rounded-2xl font-black">SIMPAN</button>
-            </div>
-            
-            <div id="m-rekap" class="hidden-el pt-10"><div id="list-rekap" class="space-y-3"></div></div>
-            
-            <div id="m-gen" class="hidden-el pt-10 text-center">
-                <h3 class="text-2xl font-black mb-6 uppercase">Generate Tagihan</h3>
-                <select id="bln-gen" class="input-premium text-center">
-                    <option value="Januari">JANUARI</option><option value="Februari">FEBRUARI</option>
-                    <option value="Maret">MARET</option><option value="April">APRIL</option>
-                    <option value="Mei">MEI</option><option value="Juni">JUNI</option>
-                </select>
-                <button onclick="prosesGenerate()" class="w-full bg-emerald-600 p-5 rounded-2xl font-black">PROSES</button>
+                <div class="text-right">
+                    <p class="text-[6px] text-gray-500 font-bold uppercase mb-0.5">MASUK</p>
+                    <h3 id="stat-uang" class="text-xs font-black text-green-500 leading-none">Rp 0</h3>
+                </div>
             </div>
         </div>
-        <button onclick="closeM()" class="btn-back">KEMBALI</button>
+
+        <div class="flex card p-1">
+            <button onclick="switchTab('tagihan')" id="btn-tab-tagihan" class="flex-1 py-1.5 text-[11px] tab-active uppercase font-black">📋 Tagihan</button>
+            <button onclick="switchTab('master')" id="btn-tab-master" class="flex-1 py-1.5 text-[11px] text-gray-500 uppercase font-black">👥 Member (<span id="count-pelanggan">0</span>)</button>
+        </div>
+
+        <div class="card overflow-hidden shadow-2xl">
+            <div class="flex items-center bg-white/5 border-b border-white/5 pr-3 gap-2">
+                <input type="text" id="cari" oninput="render()" placeholder="CARI NAMA..." class="flex-1 bg-transparent p-3 text-[10px] font-bold outline-none uppercase">
+                <button id="f-belum" onclick="setFilter('belum')" class="filter-btn bg-red-600/20 text-red-500">🔴</button>
+                <button id="f-lunas" onclick="setFilter('lunas')" class="filter-btn bg-green-600/20 text-green-500">🟢</button>
+                <button onclick="toggleTabel()" class="filter-btn bg-white/5 border border-white/10">
+                    <span id="ic-min" class="text-[10px]">🔒</span>
+                </button>
+            </div>
+            <div id="wrapper-tabel" class="overflow-x-auto max-h-[350px] hidden-table">
+                <table>
+                    <thead class="bg-black/50 sticky top-0"><tr id="head-tabel"></tr></thead>
+                    <tbody id="body-tabel"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2">
+            <button onclick="togglePanel('tambah')" class="btn-slim gold-btn">Tambah</button>
+            <button onclick="togglePanel('gen')" class="btn-slim blue-btn">Gen</button>
+            <button onclick="togglePanel('rekap')" class="btn-slim purple-btn">Rekap</button>
+            <button onclick="togglePanel('info')" class="btn-slim gray-btn">Info</button>
+        </div>
+
+        <div id="panel-gen" class="card p-5 space-y-4 hidden animate-pop">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <p class="text-[7px] text-gray-500 font-bold ml-1 uppercase">Bulan</p>
+                    <select id="bln-gen" class="input-dark uppercase font-bold text-[10px]">
+                        <option value="Januari">Januari</option><option value="Februari">Februari</option><option value="Maret">Maret</option><option value="April">April</option><option value="Mei">Mei</option><option value="Juni">Juni</option><option value="Juli">Juli</option><option value="Agustus">Agustus</option><option value="September">September</option><option value="Oktober">Oktober</option><option value="November">November</option><option value="Desember">Desember</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-[7px] text-gray-500 font-bold ml-1 uppercase">Tahun</p>
+                    <select id="thn-gen" class="input-dark uppercase font-bold text-[10px]">
+                        <option value="2025">2025</option><option value="2026">2026</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="prosesGenerate()" class="w-full blue-btn py-3.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-lg shadow-blue-900/20">Mulai Generate Masal</button>
+        </div>
+
+        <div id="panel-tambah" class="card p-4 space-y-3 hidden animate-pop">
+            <input type="text" id="new-nama" placeholder="NAMA" class="input-dark uppercase font-bold text-[10px]">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="new-nominal" placeholder="NOMINAL" class="input-dark text-[10px]">
+                <input type="number" id="new-aktivasi" placeholder="TGL AKT" class="input-dark text-[10px]">
+            </div>
+            <button onclick="tambahPelanggan()" class="w-full bg-white text-black py-2.5 rounded-xl font-black text-[9px] uppercase">Simpan Pelanggan</button>
+        </div>
+
+        <div id="panel-rekap" class="card p-4 hidden animate-pop">
+            <h3 class="text-[9px] font-black text-purple-400 uppercase mb-3 text-center tracking-widest">📊 REKAP PENDAPATAN (LUNAS)</h3>
+            <div id="list-rekap" class="space-y-2 max-h-[250px] overflow-y-auto"></div>
+        </div>
+
+        <div id="panel-info" class="card p-3 space-y-2 hidden animate-pop">
+            <div class="flex justify-between items-center"><h3 class="text-[8px] font-black text-[#d4af37] uppercase">📝 PAPAN TULIS MANUAL</h3><span id="save-status" class="text-[6px] text-gray-500 font-bold uppercase">OK</span></div>
+            <textarea id="papan-tulis" oninput="autoSavePapan()" placeholder="Tulis catatan manual..." class="w-full h-72 bg-black/40 border border-white/5 rounded-2xl p-3 text-[11px] font-bold leading-relaxed outline-none focus:border-[#d4af37] text-gray-300"></textarea>
+        </div>
     </div>
 
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxlKNSqgSPu43AGlBPKfuxf8JwFbyXx9-Nr8Ht-WF1KS9-kOS2Wu2jokmCt5xx13-BGVg/exec";
-    let dataTagihan = [], dataMaster = [], dataKeluar = [];
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyAcOfX4c7FZymt_IZ0OWHovjkF0blutV8WDRHMzNF3uyVx8pB8J6P0NkBQAeh_pzpy/exec";
+        let dataTagihan = [], dataMaster = [], currentTab = 'tagihan', filterMode = 'all';
 
-    // CEK STATUS LOGIN SAAT HALAMAN DIBUKA (Sangat Sat-Set)
-    window.onload = function() {
-        const statusLogin = localStorage.getItem('plalangan_isLoggedIn');
-        if (statusLogin === 'true') {
-            tampilkanDashboard();
-        }
-    };
-
-    function login() {
-        const u = document.getElementById('user').value.trim().toLowerCase();
-        const p = document.getElementById('pass').value.trim();
-        
-        // Ganti username & password di sini jika perlu
-        if(u === "admin" && p === "1234") { 
-            localStorage.setItem('plalangan_isLoggedIn', 'true'); // Simpan status login permanen
-            tampilkanDashboard();
-        } else { 
-            alert("Username atau Password Salah!"); 
-        }
-    }
-
-    function tampilkanDashboard() {
-        document.getElementById('login-page').style.display = 'none';
-        const mainApp = document.getElementById('main-app');
-        mainApp.classList.remove('hidden-el');
-        mainApp.style.display = 'block'; 
-        load(); // Ambil data dari database
-    }
-
-    function logout() { 
-        if(confirm("Apakah Anda yakin ingin Logout dan mengunci aplikasi?")) {
-            localStorage.removeItem('plalangan_isLoggedIn'); // Hapus status login
-            location.reload(); // Balik ke halaman login awal
-        }
-    }
-
-    // --- FUNGSI LOAD DATA DATABASE ---
-async function load() {
-        try {
-            const res = await fetch(`${API_URL}?action=read`);
-            const json = await res.json();
-            dataTagihan = json.tagihan || []; 
-            dataMaster = json.master || [];
-            // Sekarang mengambil data dari Sheets, bukan localStorage
-            dataKeluar = json.pengeluaran || []; 
-            updateStats();
-        } catch(e) { console.error("Gagal muat data:", e); }
-    }
-
-    function updateStats() {
-        const belum = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
-        const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s, i) => s + Number(i.jumlah), 0);
-        document.getElementById('stat-belum').innerText = belum;
-        document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
-    }
-
-    // --- MANAJEMEN MODAL & TABEL ---
-    function openM(type, filter = 'all') {
-        document.getElementById('modal-container').style.display = 'flex';
-        ['m-list', 'm-tambah', 'm-gen', 'm-rekap', 'm-keluar'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.classList.add('hidden-el');
-        });
-
-        if(type === 'tagihan' || type === 'master') {
-            document.getElementById('m-list').classList.remove('hidden-el');
-            document.getElementById('modal-title').innerText = type === 'master' ? 'DATABASE MEMBER' : filter.toUpperCase();
-            renderToModal(type, filter);
-        } else if(type === 'keluar') {
-            document.getElementById('m-keluar').classList.remove('hidden-el');
-            renderTabelKeluar();
-        } else {
-            const menuEl = document.getElementById('m-' + type);
-            if(menuEl) menuEl.classList.remove('hidden-el');
-            if(type === 'rekap') hitungRekap();
-        }
-    }
-
-    function renderToModal(type, filter) {
-        const container = document.getElementById('list-render'); 
-        container.innerHTML = "";
-        let source = (type === 'tagihan') ? dataTagihan : dataMaster;
-        
-        if (type === 'tagihan') {
-            if (filter === 'belum') source = source.filter(d => String(d.lunas).toLowerCase() == "false");
-            if (filter === 'lunas') source = source.filter(d => String(d.lunas).toLowerCase() == "true");
+        function toggleTabel() {
+            const w = document.getElementById('wrapper-tabel'), icon = document.getElementById('ic-min');
+            if (w.classList.contains('hidden-table')) { w.classList.remove('hidden-table'); icon.innerText = "👁️"; } 
+            else { w.classList.add('hidden-table'); icon.innerText = "🔒"; }
         }
 
-        let tableHTML = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">NAMA</th><th class="text-left">AKT</th><th class="text-left">BULAN</th><th class="text-right">STATUS</th></tr></thead><tbody class="divide-y divide-white/5">`;
-        
-        source.forEach(h => {
-            const isLunas = String(h.lunas).toLowerCase() == "true";
-            const rowStyle = (!isLunas && type === 'tagihan') ? 'border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05);' : 'border-left: 4px solid transparent;';
-            tableHTML += `<tr style="${rowStyle}" onclick="if(!${isLunas} && '${type}'=='tagihan') bayar('${h.id}')">
-                <td class="py-4 px-2"><p class="text-xs font-black uppercase text-white">${h.nama}</p><p class="text-[9px] text-blue-500 font-bold uppercase">Rp${Number(h.jumlah || h.nominal).toLocaleString()}</p></td>
-                <td class="text-xs font-bold text-gray-500">${h.aktivasi || "-"}</td>
-                <td class="text-xs font-bold text-gray-500 uppercase">${h.bulan || '-'}</td>
-                <td class="text-right"><span class="px-2 py-1 rounded-md text-[8px] font-black uppercase ${isLunas ? 'bg-green-500/10 text-green-500' : 'bg-red-600 text-white'}">${isLunas ? 'Lunas' : 'Bayar'}</span></td></tr>`;
-        });
-        container.innerHTML = tableHTML + `</tbody></table></div>`;
-    }
-
-function renderTabelKeluar() {
-        const container = document.getElementById('tabel-keluar-render');
-        let total = 0, html = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">KETERANGAN</th><th class="text-right">JUMLAH</th></tr></thead><tbody>`;
-        
-        dataKeluar.forEach(item => {
-            total += Number(item.jumlah);
-            // Menampilkan 'keterangan' dan 'tanggal' sesuai struktur GS Anda
-            html += `<tr><td class="py-4 font-bold text-xs uppercase text-white">${item.keterangan}<br><span class="text-[8px] text-gray-500">${item.tanggal}</span></td><td class="text-right font-black text-red-400 text-xs">-Rp${Number(item.jumlah).toLocaleString()}</td></tr>`;
-        });
-        container.innerHTML = html + `</tbody></table></div><div class="mt-4 p-4 bg-red-500/10 rounded-xl text-right font-black text-red-500 uppercase">Total: Rp${total.toLocaleString()}</div>`;
-    }
-
-async function simpanPengeluaran() {
-        const ket = document.getElementById('exp-nama').value; 
-        const jml = document.getElementById('exp-jumlah').value; 
-        const tgl = document.getElementById('exp-tgl').value; 
-        
-        if(!ket || !jml || !tgl) return alert("Lengkapi data pengeluaran!");
-
-        const btn = event.currentTarget || event.target;
-        const originalText = btn.innerText;
-        btn.innerText = "MENGIRIM...";
-        btn.disabled = true;
-
-        try {
-            // Mengirim ke Script GS Anda (action: tambah_pengeluaran)
-            await fetch(`${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(ket)}&jml=${jml}&tgl=${tgl}`);
-            
-            document.getElementById('exp-nama').value = ""; 
-            document.getElementById('exp-jumlah').value = "";
-            
-            await load(); 
-            renderTabelKeluar();
-            alert("Berhasil dicatat ke Sheets!");
-        } catch(e) { 
-            alert("Gagal koneksi database!"); 
-        } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
+        function setFilter(mode) {
+            filterMode = (filterMode === mode) ? 'all' : mode;
+            document.getElementById('f-belum').classList.toggle('filter-active', filterMode === 'belum');
+            document.getElementById('f-lunas').classList.toggle('filter-active', filterMode === 'lunas');
+            render();
+            if(filterMode !== 'all' && document.getElementById('wrapper-tabel').classList.contains('hidden-table')) toggleTabel();
         }
-    }
 
-    function liveSearch() {
-        const val = document.getElementById('main-search').value.toUpperCase();
-        const area = document.getElementById('search-results-area');
-        if(val === "") { area.innerHTML = ""; return; }
-        const filtered = dataTagihan.filter(d => d.nama.toUpperCase().includes(val));
-        area.innerHTML = "";
-        filtered.forEach(h => {
-            const isLunas = String(h.lunas).toLowerCase() == "true";
-            area.innerHTML += `<div class="p-4 bg-[#1a1d24] rounded-2xl mb-2 flex justify-between items-center border-l-4 ${isLunas ? 'border-green-500' : 'border-red-500'}" onclick="if(!${isLunas}) bayar('${h.id}')"><div><p class="text-sm font-black uppercase text-white">${h.nama}</p><p class="text-[9px] font-bold text-gray-500 uppercase">${h.bulan}</p></div><p class="font-black ${isLunas ? 'text-green-500' : 'text-white'}">Rp${Number(h.jumlah).toLocaleString()}</p></div>`;
-        });
-    }
-
-    function closeM() { document.getElementById('modal-container').style.display = 'none'; }
-    
-    async function bayar(id) { 
-        if(confirm("Tandai Lunas?")) { 
-            await fetch(`${API_URL}?action=update&id=${id}`); 
-            await load(); 
-            closeM(); 
-        } 
-    }
-
-    function hitungRekap() {
-        const list = document.getElementById('list-rekap'); list.innerHTML = "";
-        let rekapBulan = {};
-        dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").forEach(d => { rekapBulan[d.bulan] = (rekapBulan[d.bulan] || 0) + Number(d.jumlah); });
-        Object.keys(rekapBulan).forEach(bln => { 
-            list.innerHTML += `<div class="flex justify-between p-5 bg-[#1a1d24] rounded-2xl mb-2 border border-white/5"><span class="font-bold uppercase text-gray-400">${bln}</span><span class="font-black text-green-400 uppercase">Rp ${rekapBulan[bln].toLocaleString()}</span></div>`; 
-        });
-    }
-
-    async function tambahPelanggan() {
-        const n = document.getElementById('new-nama').value;
-        const m = document.getElementById('new-nominal').value;
-        const a = document.getElementById('new-aktivasi').value;
-        if(!n || !m) return;
-        await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
-        closeM(); await load();
-    }
-
-    async function prosesGenerate() {
-        const b = document.getElementById('bln-gen').value;
-        if(confirm(`Buat Tagihan Bulan ${b}?`)) { 
-            await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=2026`); 
-            closeM(); await load(); 
+        function togglePanel(nama) {
+            ['tambah', 'gen', 'rekap', 'info'].forEach(p => {
+                const el = document.getElementById('panel-' + p);
+                (p === nama) ? el.classList.toggle('hidden') : el.classList.add('hidden');
+            });
+            if(nama === 'rekap') hitungRekap();
         }
-    }
-</script>
+
+        function hitungRekap() {
+            const list = document.getElementById('list-rekap');
+            list.innerHTML = "";
+            let rekapBulan = {};
+            dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").forEach(d => {
+                rekapBulan[d.bulan] = (rekapBulan[d.bulan] || 0) + Number(d.jumlah);
+            });
+            const urutanBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            urutanBulan.forEach(bln => {
+                if(rekapBulan[bln]) {
+                    list.innerHTML += `<div class="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5 mb-2"><span class="text-[10px] font-black uppercase text-gray-400">${bln}</span><span class="text-[10px] font-black text-green-500">Rp ${rekapBulan[bln].toLocaleString('id-ID')}</span></div>`;
+                }
+            });
+        }
+
+        async function load() {
+            try {
+                const res = await fetch(`${API_URL}?action=read`);
+                const json = await res.json();
+                dataTagihan = json.tagihan || []; dataMaster = json.master || [];
+                document.getElementById('papan-tulis').value = localStorage.getItem('plalangan_note') || "";
+                updateStats(); render();
+            } catch(e) { console.log(e); }
+        }
+
+        function updateStats() {
+            const belum = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "false").length;
+            const uang = dataTagihan.filter(d => String(d.lunas).toLowerCase() == "true").reduce((s, i) => s + Number(i.jumlah), 0);
+            document.getElementById('stat-belum').innerText = belum;
+            document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
+            document.getElementById('count-pelanggan').innerText = dataMaster.length;
+        }
+
+        function render() {
+            const head = document.getElementById('head-tabel'), body = document.getElementById('body-tabel'), cari = document.getElementById('cari').value.toUpperCase();
+            body.innerHTML = "";
+
+            if (currentTab === 'tagihan') {
+                head.innerHTML = `<th class="col-nama">Nama</th><th class="col-akt">Akt</th><th class="col-rp">Rp</th><th class="col-aksi">Aksi</th>`;
+                let filtered = dataTagihan.filter(d => d.nama.toUpperCase().includes(cari));
+                if (filterMode === 'belum') filtered = filtered.filter(d => String(d.lunas).toLowerCase() == "false");
+                if (filterMode === 'lunas') filtered = filtered.filter(d => String(d.lunas).toLowerCase() == "true");
+                
+                filtered.forEach(h => {
+                    const lunas = String(h.lunas).toLowerCase() == "true";
+                    body.innerHTML += `<tr class="animate-pop ${lunas ? 'baris-lunas' : 'baris-belum'}">
+                        <td class="font-bold uppercase text-[9px] truncate">${h.nama} ${!lunas ? '📌' : ''}</td>
+                        <td class="text-center">${h.aktivasi || '0'}</td>
+                        <td class="${lunas ? 'text-green-500' : 'text-red-500'} font-bold">Rp${Number(h.jumlah).toLocaleString()}</td>
+                        <td><button onclick="bayar('${h.id}')" class="w-full py-1 rounded text-[7px] font-black transition-all active:scale-85 ${lunas ? 'bg-green-500/10 text-green-500 border border-green-500' : 'bg-red-500 text-white shadow-lg'}">${lunas ? 'LUNAS' : 'BAYAR'}</button></td>
+                    </tr>`;
+                });
+            } else {
+                head.innerHTML = `<th class="col-nama">Nama</th><th class="col-akt">Akt</th><th class="col-rp">Nominal</th><th style="width:5%"></th>`;
+                dataMaster.filter(d => d.nama.toUpperCase().includes(cari)).forEach(h => {
+                    body.innerHTML += `<tr class="animate-pop baris-lunas">
+                        <td class="font-bold uppercase text-[9px] truncate">${h.nama}</td>
+                        <td class="text-center">${h.aktivasi || '0'}</td>
+                        <td class="text-gray-400 font-bold">Rp${Number(h.nominal).toLocaleString()}</td>
+                        <td></td>
+                    </tr>`;
+                });
+            }
+        }
+
+        async function bayar(id) { if(confirm("Konfirmasi Bayar?")) { await fetch(`${API_URL}?action=update&id=${id}`); load(); } }
+        async function tambahPelanggan() { 
+            const n = document.getElementById('new-nama').value, m = document.getElementById('new-nominal').value, a = document.getElementById('new-aktivasi').value;
+            if(!n || !m) return alert("Isi Nama & Nominal!");
+            await fetch(`${API_URL}?action=tambah_warga&nama=${encodeURIComponent(n)}&nominal=${m}&aktivasi=${a}`);
+            alert("Berhasil!"); togglePanel(''); load();
+        }
+        async function prosesGenerate() {
+            const b = document.getElementById('bln-gen').value, t = document.getElementById('thn-gen').value;
+            if(confirm(`Generate massal bulan ${b} ${t}?`)) { await fetch(`${API_URL}?action=generate&bulan=${b}&tahun=${t}`); alert("Selesai!"); load(); }
+        }
+        function switchTab(t) { currentTab = t; document.getElementById('btn-tab-tagihan').classList.toggle('tab-active', t=='tagihan'); document.getElementById('btn-tab-master').classList.toggle('tab-active', t=='master'); render(); }
+        function autoSavePapan() {
+            const teks = document.getElementById('papan-tulis').value;
+            localStorage.setItem('plalangan_note', teks);
+            document.getElementById('save-status').innerText = "MENYIMPAN...";
+            clearTimeout(window.sv);
+            window.sv = setTimeout(() => { document.getElementById('save-status').innerText = "TERSIMPAN"; }, 800);
+        }
+        window.onload = load;
+    </script>
 </body>
 </html>
