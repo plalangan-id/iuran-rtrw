@@ -15,7 +15,6 @@
             min-height: 100vh;
         }
 
-        /* Halaman Login */
         #login-page {
             position: fixed; inset: 0; background: #0f1115;
             z-index: 2000; display: flex; flex-direction: column;
@@ -125,6 +124,7 @@
 
     <div id="modal-container" class="modal-overlay">
         <div class="modal-content-scroll">
+            
             <div id="m-list" class="hidden-el">
                 <h3 id="modal-title" class="text-2xl font-black mb-8 uppercase text-center tracking-tighter">Daftar</h3>
                 <div id="list-render"></div>
@@ -136,7 +136,7 @@
                     <input type="text" id="exp-nama" placeholder="NAMA BARANG" class="input-premium uppercase">
                     <input type="number" id="exp-jumlah" placeholder="JUMLAH (RP)" class="input-premium">
                     <input type="date" id="exp-tgl" class="input-premium uppercase">
-                    <button onclick="simpanPengeluaran(event)" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
+                    <button onclick="simpanPengeluaran()" class="w-full bg-orange-600 p-5 rounded-2xl font-black">TAMBAH</button>
                 </div>
                 <div id="tabel-keluar-render"></div>
             </div>
@@ -165,28 +165,22 @@
     </div>
 
 <script>
+    // GANTI URL DI BAWAH INI DENGAN URL DEPLOY TERBARU ANDA
     const API_URL = "https://script.google.com/macros/s/AKfycbxlKNSqgSPu43AGlBPKfuxf8JwFbyXx9-Nr8Ht-WF1KS9-kOS2Wu2jokmCt5xx13-BGVg/exec";
+    
     let dataTagihan = [], dataMaster = [], dataKeluar = [];
 
-    // CEK STATUS LOGIN SAAT HALAMAN DIBUKA (Sangat Sat-Set)
     window.onload = function() {
-        const statusLogin = localStorage.getItem('plalangan_isLoggedIn');
-        if (statusLogin === 'true') {
-            tampilkanDashboard();
-        }
+        if (localStorage.getItem('plalangan_isLoggedIn') === 'true') tampilkanDashboard();
     };
 
     function login() {
         const u = document.getElementById('user').value.trim().toLowerCase();
         const p = document.getElementById('pass').value.trim();
-        
-        // Ganti username & password di sini jika perlu
         if(u === "admin" && p === "1234") { 
-            localStorage.setItem('plalangan_isLoggedIn', 'true'); // Simpan status login permanen
+            localStorage.setItem('plalangan_isLoggedIn', 'true');
             tampilkanDashboard();
-        } else { 
-            alert("Username atau Password Salah!"); 
-        }
+        } else { alert("Username atau Password Salah!"); }
     }
 
     function tampilkanDashboard() {
@@ -194,24 +188,19 @@
         const mainApp = document.getElementById('main-app');
         mainApp.classList.remove('hidden-el');
         mainApp.style.display = 'block'; 
-        load(); // Ambil data dari database
+        load();
     }
 
     function logout() { 
-        if(confirm("Apakah Anda yakin ingin Logout dan mengunci aplikasi?")) {
-            localStorage.removeItem('plalangan_isLoggedIn'); // Hapus status login
-            location.reload(); // Balik ke halaman login awal
-        }
+        if(confirm("Logout?")) { localStorage.removeItem('plalangan_isLoggedIn'); location.reload(); }
     }
 
-    // --- FUNGSI LOAD DATA DATABASE ---
-async function load() {
+    async function load() {
         try {
             const res = await fetch(`${API_URL}?action=read`);
             const json = await res.json();
             dataTagihan = json.tagihan || []; 
             dataMaster = json.master || [];
-            // Sekarang mengambil data dari Sheets, bukan localStorage
             dataKeluar = json.pengeluaran || []; 
             updateStats();
         } catch(e) { console.error("Gagal muat data:", e); }
@@ -224,13 +213,9 @@ async function load() {
         document.getElementById('stat-uang').innerText = "Rp " + uang.toLocaleString('id-ID');
     }
 
-    // --- MANAJEMEN MODAL & TABEL ---
     function openM(type, filter = 'all') {
         document.getElementById('modal-container').style.display = 'flex';
-        ['m-list', 'm-tambah', 'm-gen', 'm-rekap', 'm-keluar'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.classList.add('hidden-el');
-        });
+        ['m-list', 'm-tambah', 'm-gen', 'm-rekap', 'm-keluar'].forEach(id => document.getElementById(id).classList.add('hidden-el'));
 
         if(type === 'tagihan' || type === 'master') {
             document.getElementById('m-list').classList.remove('hidden-el');
@@ -240,8 +225,7 @@ async function load() {
             document.getElementById('m-keluar').classList.remove('hidden-el');
             renderTabelKeluar();
         } else {
-            const menuEl = document.getElementById('m-' + type);
-            if(menuEl) menuEl.classList.remove('hidden-el');
+            document.getElementById('m-' + type).classList.remove('hidden-el');
             if(type === 'rekap') hitungRekap();
         }
     }
@@ -250,14 +234,11 @@ async function load() {
         const container = document.getElementById('list-render'); 
         container.innerHTML = "";
         let source = (type === 'tagihan') ? dataTagihan : dataMaster;
-        
         if (type === 'tagihan') {
             if (filter === 'belum') source = source.filter(d => String(d.lunas).toLowerCase() == "false");
             if (filter === 'lunas') source = source.filter(d => String(d.lunas).toLowerCase() == "true");
         }
-
         let tableHTML = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">NAMA</th><th class="text-left">AKT</th><th class="text-left">BULAN</th><th class="text-right">STATUS</th></tr></thead><tbody class="divide-y divide-white/5">`;
-        
         source.forEach(h => {
             const isLunas = String(h.lunas).toLowerCase() == "true";
             const rowStyle = (!isLunas && type === 'tagihan') ? 'border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05);' : 'border-left: 4px solid transparent;';
@@ -270,56 +251,42 @@ async function load() {
         container.innerHTML = tableHTML + `</tbody></table></div>`;
     }
 
-function renderTabelKeluar() {
+    function renderTabelKeluar() {
         const container = document.getElementById('tabel-keluar-render');
         let total = 0, html = `<div class="overflow-x-auto"><table><thead><tr><th class="text-left">KETERANGAN</th><th class="text-right">JUMLAH</th></tr></thead><tbody>`;
-        
         dataKeluar.forEach(item => {
             total += Number(item.jumlah);
-            // Menampilkan 'keterangan' dan 'tanggal' sesuai struktur GS Anda
             html += `<tr><td class="py-4 font-bold text-xs uppercase text-white">${item.keterangan}<br><span class="text-[8px] text-gray-500">${item.tanggal}</span></td><td class="text-right font-black text-red-400 text-xs">-Rp${Number(item.jumlah).toLocaleString()}</td></tr>`;
         });
         container.innerHTML = html + `</tbody></table></div><div class="mt-4 p-4 bg-red-500/10 rounded-xl text-right font-black text-red-500 uppercase">Total: Rp${total.toLocaleString()}</div>`;
     }
 
-async function simpanPengeluaran(event) { // Tambahkan parameter event
-    const ket = document.getElementById('exp-nama').value; 
-    const jml = document.getElementById('exp-jumlah').value; 
-    const tgl = document.getElementById('exp-tgl').value; 
-    
-    if(!ket || !jml || !tgl) return alert("Lengkapi data pengeluaran!");
+    async function simpanPengeluaran() {
+        const n = document.getElementById('exp-nama').value;
+        const j = document.getElementById('exp-jumlah').value;
+        const t = document.getElementById('exp-tgl').value;
+        if(!n || !j || !t) return alert("Isi semua data!");
 
-    // Ambil tombol dengan aman agar tidak gagal koneksi
-    const btn = event ? (event.currentTarget || event.target) : null;
-    if(btn) {
+        // Cari tombol tambah
+        const btn = document.querySelector("#m-keluar button");
         btn.innerText = "MENGIRIM...";
         btn.disabled = true;
+
+        try {
+            const url = `${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(n)}&jml=${j}&tgl=${t}`;
+            const res = await fetch(url);
+            const txt = await res.text();
+            if(txt.includes("Sukses")) {
+                document.getElementById('exp-nama').value = "";
+                document.getElementById('exp-jumlah').value = "";
+                await load();
+                renderTabelKeluar();
+                alert("Berhasil!");
+            }
+        } catch(e) { alert("Gagal koneksi database!"); }
+        finally { btn.innerText = "TAMBAH"; btn.disabled = false; }
     }
 
-    try {
-        const url = `${API_URL}?action=tambah_pengeluaran&ket=${encodeURIComponent(ket)}&jml=${jml}&tgl=${tgl}`;
-        const response = await fetch(url);
-        const result = await response.text();
-        
-        if (result.includes("Sukses")) {
-            document.getElementById('exp-nama').value = ""; 
-            document.getElementById('exp-jumlah').value = "";
-            
-            await load(); 
-            renderTabelKeluar();
-            alert("Berhasil dicatat ke Sheets!");
-        } else {
-            alert("Server merespon: " + result);
-        }
-    } catch(e) { 
-        alert("Gagal koneksi database! Pastikan URL API benar dan sudah di-Deploy sebagai 'Anyone'."); 
-    } finally {
-        if(btn) {
-            btn.innerText = "TAMBAH";
-            btn.disabled = false;
-        }
-    }
-}
     function liveSearch() {
         const val = document.getElementById('main-search').value.toUpperCase();
         const area = document.getElementById('search-results-area');
